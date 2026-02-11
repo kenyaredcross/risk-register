@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRCS Risk Management Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #FAFAFA;
+        }
+        #app {
+            min-height: 100vh;
+        }
+        #loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #FAFAFA;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #E5E5E5;
+            border-top-color: #DC2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 20px;
+            color: #666666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div>
+            <div class="spinner"></div>
+            <div class="loading-text">Loading Risk Dashboard...</div>
+        </div>
+    </div>
+    <div id="app"></div>
+
+    <script>
+        // Store CSRF token for API calls
+        window.csrf_token = frappe?.csrf_token || '';
+    </script>
+    <script type="module" src="/assets/krcs_risk/public/vue_dashboard/src/main.js"></script>
+</body>
+</html>

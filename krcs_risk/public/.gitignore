@@ -1,0 +1,5 @@
+# Vue Dashboard Development Files
+vue_dashboard/node_modules/
+vue_dashboard/dist/
+vue_dashboard/.vite/
+vue_dashboard/*.log

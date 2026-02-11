@@ -1,15 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "RISK-REV-.YYYY.-.#####",
  "creation": "2026-02-10 00:00:00.000000",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "risk_register",
   "review_date",
-  "col_break_1",
   "reviewed_by",
+  "col_break_1",
   "next_review_date",
   "section_break_summary",
   "summary",
@@ -18,14 +17,6 @@
  ],
  "fields": [
   {
-   "fieldname": "risk_register",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Program Risk Register",
-   "options": "Program Risk Register",
-   "reqd": 1
-  },
-  {
    "fieldname": "review_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -33,19 +24,19 @@
    "reqd": 1
   },
   {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reviewed By"
+  },
+  {
    "fieldname": "col_break_1",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "reviewed_by",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Reviewed By",
-   "options": "User"
-  },
-  {
    "fieldname": "next_review_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Next Review Date"
   },
   {
@@ -56,6 +47,7 @@
   {
    "fieldname": "summary",
    "fieldtype": "Long Text",
+   "in_list_view": 1,
    "label": "Summary of Review"
   },
   {
@@ -66,22 +58,18 @@
   {
    "fieldname": "actions",
    "fieldtype": "Long Text",
+   "in_list_view": 1,
    "label": "Decisions / Actions Agreed"
   }
  ],
  "index_web_pages_for_search": 0,
  "is_submittable": 0,
- "links": [
-  {
-   "link_doctype": "Program Risk Register",
-   "link_fieldname": "risk_register"
-  }
- ],
- "modified": "2026-02-10 00:00:00.000000",
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-11 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
  "name": "Risk Review",
- "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

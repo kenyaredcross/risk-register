@@ -70,6 +70,12 @@ app_license = "mit"
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
+# Website Route Rules
+# -------------------
+website_route_rules = [
+    {"from_route": "/risk-dashboard", "to_route": "risk-dashboard"},
+]
+
 # automatically load and sync documents of this doctype from downstream apps
 # importable_doctypes = [doctype_1]
 

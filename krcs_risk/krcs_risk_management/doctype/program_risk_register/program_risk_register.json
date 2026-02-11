@@ -29,6 +29,8 @@
   "timeline",
   "col_break_ownership",
   "risk_status",
+  "section_break_reviews",
+  "risk_reviews",
   "section_break_remarks",
   "remarks"
  ],
@@ -172,6 +174,17 @@
    "in_list_view": 1,
    "label": "Risk Status",
    "options": "\nOpen\nIn Progress\nMitigated\nEscalated"
+  },
+  {
+   "fieldname": "section_break_reviews",
+   "fieldtype": "Section Break",
+   "label": "Risk Reviews"
+  },
+  {
+   "fieldname": "risk_reviews",
+   "fieldtype": "Table",
+   "label": "Risk Reviews",
+   "options": "Risk Review"
   },
   {
    "fieldname": "section_break_remarks",
