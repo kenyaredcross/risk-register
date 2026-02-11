@@ -49,11 +49,11 @@
    "reqd": 1
   },
   {
+   "description": "Unit operates under a Department",
    "fieldname": "unit",
    "fieldtype": "Link",
    "label": "Unit",
-   "options": "Unit",
-   "description": "Unit operates under a Department"
+   "options": "Unit"
   },
   {
    "fieldname": "county",
@@ -88,7 +88,7 @@
   },
   {
    "fieldname": "risk_description",
-   "fieldtype": "Long Text",
+   "fieldtype": "Small Text",
    "label": "Risk Description",
    "reqd": 1
   },
@@ -110,16 +110,16 @@
    "label": "Risk Rating"
   },
   {
+   "description": "Scale 1\u20135",
    "fieldname": "likelihood",
    "fieldtype": "Int",
-   "label": "Risk Likelihood",
-   "description": "Scale 1\u20135"
+   "label": "Risk Likelihood"
   },
   {
+   "description": "Scale 1\u20135",
    "fieldname": "impact",
    "fieldtype": "Int",
-   "label": "Risk Impact",
-   "description": "Scale 1\u20135"
+   "label": "Risk Impact"
   },
   {
    "fieldname": "col_break_rating",
@@ -185,7 +185,7 @@
   }
  ],
  "links": [],
- "modified": "2026-02-10 12:19:02.790363",
+ "modified": "2026-02-11 08:42:03.580342",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
  "name": "Program Risk Register",

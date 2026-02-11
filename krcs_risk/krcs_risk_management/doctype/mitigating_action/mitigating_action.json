@@ -1,19 +1,19 @@
 {
  "actions": [],
- "creation": "2026-02-10 00:00:00.000000",
+ "creation": "2026-02-10 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "action_description",
-  "responsible_person",
   "col_break_1",
+  "responsible_person",
   "deadline",
   "status"
  ],
  "fields": [
   {
    "fieldname": "action_description",
-   "fieldtype": "Long Text",
+   "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Action Description",
    "reqd": 1
@@ -43,17 +43,16 @@
    "options": "\nPending\nIn Progress\nCompleted"
   }
  ],
- "index_web_pages_for_search": 0,
  "istable": 1,
  "links": [],
- "modified": "2026-02-10 00:00:00.000000",
+ "modified": "2026-02-11 08:38:07.421900",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
  "name": "Mitigating Action",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 0
+ "states": []
 }
