@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "RISK-REV-.YYYY.-.#####",
+ "creation": "2026-02-10 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "risk_register",
+  "review_date",
+  "col_break_1",
+  "reviewed_by",
+  "next_review_date",
+  "section_break_summary",
+  "summary",
+  "section_break_actions",
+  "actions"
+ ],
+ "fields": [
+  {
+   "fieldname": "risk_register",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Program Risk Register",
+   "options": "Program Risk Register",
+   "reqd": 1
+  },
+  {
+   "fieldname": "review_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Review Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reviewed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "next_review_date",
+   "fieldtype": "Date",
+   "label": "Next Review Date"
+  },
+  {
+   "fieldname": "section_break_summary",
+   "fieldtype": "Section Break",
+   "label": "Summary of Review"
+  },
+  {
+   "fieldname": "summary",
+   "fieldtype": "Long Text",
+   "label": "Summary of Review"
+  },
+  {
+   "fieldname": "section_break_actions",
+   "fieldtype": "Section Break",
+   "label": "Decisions / Actions Agreed"
+  },
+  {
+   "fieldname": "actions",
+   "fieldtype": "Long Text",
+   "label": "Decisions / Actions Agreed"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "is_submittable": 0,
+ "links": [
+  {
+   "link_doctype": "Program Risk Register",
+   "link_fieldname": "risk_register"
+  }
+ ],
+ "modified": "2026-02-10 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "KRCS Risk Management",
+ "name": "Risk Review",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
