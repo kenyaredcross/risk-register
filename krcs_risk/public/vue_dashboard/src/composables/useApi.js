@@ -1,9 +1,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
-// Configure axios defaults
-axios.defaults.baseURL = window.location.origin
-axios.defaults.headers.common['X-Frappe-CSRF-Token'] = window.csrf_token || ''
+// Axios is configured globally in main.js
 
 export function useApi() {
   const loading = ref(false)
@@ -21,6 +19,8 @@ export function useApi() {
         params: {
           fields: JSON.stringify([
             'name',
+            'project',
+            'risk_category',
             'risk_description',
             'likelihood',
             'impact',
@@ -28,8 +28,16 @@ export function useApi() {
             'risk_level',
             'risk_owner',
             'department',
+            'region',
             'status',
+            'review_frequency',
+            'next_review_due',
+            'review_status',
             'timeline',
+            'status',
+            'approved_by',
+            'approval_date',
+            'rejection_reason',
             'creation',
             'modified'
           ]),
@@ -76,6 +84,8 @@ export function useApi() {
       high: 0,
       medium: 0,
       low: 0,
+      overdue: 0,
+      dueSoon: 0,
       byDepartment: {},
       byStatus: {},
       averageRating: 0
@@ -90,6 +100,10 @@ export function useApi() {
       else if (level === 'high') stats.high++
       else if (level === 'medium') stats.medium++
       else if (level === 'low') stats.low++
+
+      // Count by review status
+      if (risk.review_status === 'Overdue') stats.overdue++
+      else if (risk.review_status === 'Due Soon') stats.dueSoon++
 
       // Count by department
       const dept = risk.department || 'Unassigned'
@@ -207,6 +221,229 @@ export function useApi() {
     }
   }
 
+  /**
+   * Get current user's approval roles (generic, not risk-specific)
+   */
+  const getUserRoles = async () => {
+    try {
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_user_roles')
+      return res.data.message || { is_any_approver: false, is_global_approver: false, roles: [] }
+    } catch {
+      return { is_any_approver: false, is_global_approver: false, roles: [] }
+    }
+  }
+
+  /**
+   * Check if current user can approve/reject a specific risk (scoped check)
+   */
+  const canApproveRisk = async (riskName) => {
+    try {
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.can_approve_risk', {
+        params: { risk_name: riskName }
+      })
+      return res.data.message || { can_approve: false, status: '' }
+    } catch {
+      return { can_approve: false, status: '' }
+    }
+  }
+
+  /**
+   * Submit a risk for approval (Draft/Rejected → Pending Approval)
+   */
+  const submitForApproval = async (riskName) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.submit_for_approval', {
+        risk_name: riskName
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to submit for approval.' }
+    }
+  }
+
+  /**
+   * Request closure of a risk (Open → Pending Close Approval)
+   */
+  const requestClose = async (riskName) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.request_close', {
+        risk_name: riskName
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to request closure.' }
+    }
+  }
+
+  /**
+   * Approve a pending risk (Approver only)
+   */
+  const approveRisk = async (riskName) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.approve_risk', {
+        risk_name: riskName
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to approve risk.' }
+    }
+  }
+
+  /**
+   * Reject a pending risk (Approver only)
+   */
+  const rejectRisk = async (riskName, reason) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.reject_risk', {
+        risk_name: riskName,
+        reason: reason || ''
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to reject risk.' }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Admin APIs (System Manager only)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Get all departments with their units
+   */
+  const getDepartments = async () => {
+    try {
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_departments')
+      return res.data.message || []
+    } catch {
+      return []
+    }
+  }
+
+  /**
+   * Create a new department
+   */
+  const createDepartment = async (departmentName) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.create_department', {
+        department_name: departmentName
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to create department.' }
+    }
+  }
+
+  /**
+   * Delete a department
+   */
+  const deleteDepartment = async (name) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.delete_department', { name })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to delete department.' }
+    }
+  }
+
+  /**
+   * Create a new unit under a department
+   */
+  const createUnit = async (unitName, department) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.create_unit', {
+        unit_name: unitName,
+        department
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to create unit.' }
+    }
+  }
+
+  /**
+   * Delete a unit
+   */
+  const deleteUnit = async (name) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.delete_unit', { name })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to delete unit.' }
+    }
+  }
+
+  /**
+   * Get all users with their KRCS roles
+   */
+  const getUsers = async () => {
+    try {
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_users')
+      return res.data.message || []
+    } catch {
+      return []
+    }
+  }
+
+  /**
+   * Create a new user
+   */
+  const createUser = async (email, firstName, lastName, roles) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.create_user', {
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        roles: JSON.stringify(roles)
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to create user.' }
+    }
+  }
+
+  /**
+   * Update a user's KRCS roles
+   */
+  const updateUserRoles = async (user, roles) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.update_user_roles', {
+        user,
+        roles: JSON.stringify(roles)
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to update roles.' }
+    }
+  }
+
+  /**
+   * Enable/disable a user
+   */
+  const toggleUserEnabled = async (user, enabled) => {
+    try {
+      const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.toggle_user_enabled', {
+        user,
+        enabled: enabled ? 1 : 0
+      })
+      return res.data.message || { success: false }
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Failed to toggle user.' }
+    }
+  }
+
+  /**
+   * Get admin metadata (roles list, is_system_manager check)
+   */
+  const getAdminMeta = async () => {
+    try {
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_admin_meta')
+      return res.data.message || { is_system_manager: false, krcs_roles: [] }
+    } catch {
+      return { is_system_manager: false, krcs_roles: [] }
+    }
+  }
+
   return {
     loading,
     error,
@@ -216,6 +453,23 @@ export function useApi() {
     getRiskMatrix,
     addRiskReview,
     updateRiskReview,
-    deleteRiskReview
+    deleteRiskReview,
+    getUserRoles,
+    canApproveRisk,
+    submitForApproval,
+    requestClose,
+    approveRisk,
+    rejectRisk,
+    // Admin APIs
+    getDepartments,
+    createDepartment,
+    deleteDepartment,
+    createUnit,
+    deleteUnit,
+    getUsers,
+    createUser,
+    updateUserRoles,
+    toggleUserEnabled,
+    getAdminMeta,
   }
 }

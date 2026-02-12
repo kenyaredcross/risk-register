@@ -1,0 +1,11 @@
+[
+  {"doctype": "Region", "name": "Coast", "region_name": "Coast", "region_abbreviation": "COR"},
+  {"doctype": "Region", "name": "North Eastern", "region_name": "North Eastern", "region_abbreviation": "NER"},
+  {"doctype": "Region", "name": "Lower Eastern", "region_name": "Lower Eastern", "region_abbreviation": "LER"},
+  {"doctype": "Region", "name": "Central", "region_name": "Central", "region_abbreviation": "CER"},
+  {"doctype": "Region", "name": "Upper Eastern", "region_name": "Upper Eastern", "region_abbreviation": "UER"},
+  {"doctype": "Region", "name": "South Rift", "region_name": "South Rift", "region_abbreviation": "SRR"},
+  {"doctype": "Region", "name": "North Rift", "region_name": "North Rift", "region_abbreviation": "NRR"},
+  {"doctype": "Region", "name": "West Kenya", "region_name": "West Kenya", "region_abbreviation": "WKR"},
+  {"doctype": "Region", "name": "Nation Wide", "region_name": "Nation Wide", "region_abbreviation": "NWR"}
+]

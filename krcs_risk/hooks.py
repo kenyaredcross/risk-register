@@ -70,6 +70,13 @@ app_license = "mit"
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
+# Fixtures
+# --------
+fixtures = [
+    {"dt": "Region"},
+    {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
+]
+
 # Website Route Rules
 # -------------------
 website_route_rules = [
@@ -149,23 +156,11 @@ website_route_rules = [
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"krcs_risk.tasks.all"
-# 	],
-# 	"daily": [
-# 		"krcs_risk.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"krcs_risk.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"krcs_risk.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"krcs_risk.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+    "daily": [
+        "krcs_risk.tasks.daily"
+    ],
+}
 
 # Testing
 # -------

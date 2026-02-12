@@ -8,7 +8,7 @@
 
     <!-- Filters & Search -->
     <div class="card mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <!-- Search -->
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-charcoal mb-2">Search</label>
@@ -43,6 +43,18 @@
             <option value="Mitigated">Mitigated</option>
           </select>
         </div>
+
+        <!-- Review Status Filter -->
+        <div>
+          <label class="block text-sm font-medium text-charcoal mb-2">Review Status</label>
+          <select v-model="filterReviewStatus" class="input">
+            <option value="">All Reviews</option>
+            <option value="Overdue">🔴 Overdue</option>
+            <option value="Due Soon">🟡 Due Soon</option>
+            <option value="On Track">🟢 On Track</option>
+            <option value="Not Scheduled">⚪ Not Scheduled</option>
+          </select>
+        </div>
       </div>
 
       <!-- Active Filters -->
@@ -51,6 +63,7 @@
           <span class="text-sm text-medium-gray">Active filters:</span>
           <span v-if="filterLevel" class="badge badge-medium">{{ filterLevel }}</span>
           <span v-if="filterStatus" class="badge badge-medium">{{ filterStatus }}</span>
+          <span v-if="filterReviewStatus" class="badge badge-medium">{{ filterReviewStatus }}</span>
         </div>
         <button @click="clearFilters" class="text-sm text-red-primary hover:text-red-hover font-medium">
           Clear All
@@ -120,10 +133,11 @@ const router = useRouter()
 const searchQuery = ref('')
 const filterLevel = ref('')
 const filterStatus = ref('')
+const filterReviewStatus = ref('')
 const sortBy = ref('rating-desc')
 
 const hasActiveFilters = computed(() => {
-  return searchQuery.value || filterLevel.value || filterStatus.value
+  return searchQuery.value || filterLevel.value || filterStatus.value || filterReviewStatus.value
 })
 
 const filteredRisks = computed(() => {
@@ -148,6 +162,11 @@ const filteredRisks = computed(() => {
   // Status filter
   if (filterStatus.value) {
     risks = risks.filter(risk => risk.status === filterStatus.value)
+  }
+
+  // Review status filter
+  if (filterReviewStatus.value) {
+    risks = risks.filter(risk => (risk.review_status || 'Not Scheduled') === filterReviewStatus.value)
   }
 
   // Sort
@@ -175,6 +194,7 @@ const clearFilters = () => {
   searchQuery.value = ''
   filterLevel.value = ''
   filterStatus.value = ''
+  filterReviewStatus.value = ''
 }
 
 const viewRisk = (risk) => {

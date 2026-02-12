@@ -18,7 +18,8 @@
 
         <div class="flex items-start justify-between">
           <div>
-            <h1 class="text-3xl font-bold text-charcoal mb-2">{{ store.selectedRisk.name }}</h1>
+            <h1 class="text-3xl font-bold text-charcoal mb-1">{{ store.selectedRisk.project || store.selectedRisk.name }}</h1>
+            <p class="text-sm text-medium-gray font-mono mb-1">{{ store.selectedRisk.name }}</p>
             <p class="text-medium-gray">{{ formatDate(store.selectedRisk.creation) }}</p>
           </div>
           <span class="badge text-base px-4 py-2" :class="getBadgeClass(store.selectedRisk.risk_level)">
@@ -185,6 +186,10 @@
             <h2 class="card-header">Quick Info</h2>
             <div class="space-y-4">
               <div>
+                <div class="text-xs text-medium-gray mb-1">Risk Category</div>
+                <div class="text-charcoal font-medium">{{ store.selectedRisk.risk_category || 'N/A' }}</div>
+              </div>
+              <div>
                 <div class="text-xs text-medium-gray mb-1">Risk Owner</div>
                 <div class="text-charcoal font-medium">{{ store.selectedRisk.risk_owner || 'Unassigned' }}</div>
               </div>
@@ -197,8 +202,8 @@
                 <div class="text-charcoal font-medium">{{ store.selectedRisk.unit || 'N/A' }}</div>
               </div>
               <div>
-                <div class="text-xs text-medium-gray mb-1">County</div>
-                <div class="text-charcoal font-medium">{{ store.selectedRisk.county || 'N/A' }}</div>
+                <div class="text-xs text-medium-gray mb-1">Region</div>
+                <div class="text-charcoal font-medium">{{ store.selectedRisk.region || 'N/A' }}</div>
               </div>
               <div>
                 <div class="text-xs text-medium-gray mb-1">Status</div>
@@ -207,6 +212,27 @@
               <div>
                 <div class="text-xs text-medium-gray mb-1">Timeline</div>
                 <div class="text-charcoal font-medium">{{ store.selectedRisk.timeline || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review Schedule -->
+          <div class="card">
+            <h2 class="card-header">Review Schedule</h2>
+            <div class="space-y-4">
+              <div>
+                <div class="text-xs text-medium-gray mb-1">Frequency</div>
+                <div class="text-charcoal font-medium">{{ store.selectedRisk.review_frequency || 'Not Set' }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-medium-gray mb-1">Next Review Due</div>
+                <div class="text-charcoal font-medium">{{ store.selectedRisk.next_review_due || 'N/A' }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-medium-gray mb-1">Review Status</div>
+                <span class="px-2 py-1 rounded-full text-xs font-semibold" :class="getReviewStatusClass(store.selectedRisk.review_status)">
+                  {{ store.selectedRisk.review_status || 'Not Scheduled' }}
+                </span>
               </div>
             </div>
           </div>
@@ -222,6 +248,76 @@
               <div>
                 <div class="text-xs text-medium-gray mb-1">Last Modified</div>
                 <div class="text-sm text-charcoal">{{ formatDate(store.selectedRisk.modified) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Approval Status -->
+          <div class="card">
+            <h2 class="card-header">Approval</h2>
+            <div class="space-y-4">
+              <div>
+                <div class="text-xs text-medium-gray mb-1">Workflow Status</div>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold" :class="getStatusClass(store.selectedRisk.status)">
+                  {{ store.selectedRisk.status || 'Draft' }}
+                </span>
+              </div>
+              <div v-if="store.selectedRisk.approved_by">
+                <div class="text-xs text-medium-gray mb-1">{{ store.selectedRisk.status === 'Rejected' ? 'Rejected By' : 'Approved By' }}</div>
+                <div class="text-charcoal font-medium text-sm">{{ store.selectedRisk.approved_by }}</div>
+              </div>
+              <div v-if="store.selectedRisk.approval_date">
+                <div class="text-xs text-medium-gray mb-1">Date</div>
+                <div class="text-charcoal font-medium text-sm">{{ formatDate(store.selectedRisk.approval_date) }}</div>
+              </div>
+              <div v-if="store.selectedRisk.rejection_reason">
+                <div class="text-xs text-medium-gray mb-1">Rejection Reason</div>
+                <div class="text-sm text-red-700 bg-red-50 rounded p-2">{{ store.selectedRisk.rejection_reason }}</div>
+              </div>
+
+              <!-- Workflow Action Buttons -->
+              <div class="space-y-2 pt-2 border-t border-light-border">
+                <!-- Submit for Approval: Draft or Rejected -->
+                <button
+                  v-if="store.selectedRisk.status === 'Draft' || store.selectedRisk.status === 'Rejected'"
+                  @click="handleSubmitForApproval"
+                  :disabled="actionLoading"
+                  class="btn btn-primary w-full text-sm"
+                >
+                  {{ actionLoading ? 'Submitting...' : 'Submit for Approval' }}
+                </button>
+
+                <!-- Request Closure: Open -->
+                <button
+                  v-if="store.selectedRisk.status === 'Open'"
+                  @click="handleRequestClose"
+                  :disabled="actionLoading"
+                  class="btn btn-outline w-full text-sm"
+                >
+                  {{ actionLoading ? 'Requesting...' : 'Request Closure' }}
+                </button>
+
+                <!-- Approve (Approver only) -->
+                <button
+                  v-if="isApprover && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')"
+                  @click="handleApprove"
+                  :disabled="actionLoading"
+                  class="btn btn-primary w-full text-sm"
+                >
+                  {{ actionLoading ? 'Approving...' : 'Approve' }}
+                </button>
+
+                <!-- Reject (Approver only) -->
+                <button
+                  v-if="isApprover && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')"
+                  @click="showRejectModal = true"
+                  :disabled="actionLoading"
+                  class="w-full px-4 py-2 border border-red-primary text-red-primary rounded-lg hover:bg-red-50 transition-colors text-sm font-medium"
+                >
+                  Reject
+                </button>
+
+                <div v-if="actionError" class="text-xs text-red-600 mt-1">{{ actionError }}</div>
               </div>
             </div>
           </div>
@@ -261,6 +357,27 @@
       @close="closeReviewForm"
       @submit="handleReviewSubmit"
     />
+
+    <!-- Reject Modal -->
+    <div v-if="showRejectModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="showRejectModal = false">
+      <div class="bg-white rounded-lg shadow-elegant-xl max-w-md w-full p-6">
+        <h3 class="text-lg font-bold text-charcoal mb-4">Reject Risk</h3>
+        <label class="block text-sm font-medium text-charcoal mb-2">Rejection Reason <span class="text-red-primary">*</span></label>
+        <textarea
+          v-model="rejectReason"
+          rows="3"
+          placeholder="Provide a reason for rejection..."
+          class="input w-full mb-4"
+        ></textarea>
+        <div v-if="actionError" class="text-sm text-red-600 mb-3">{{ actionError }}</div>
+        <div class="flex space-x-3">
+          <button @click="showRejectModal = false" class="btn btn-outline flex-1">Cancel</button>
+          <button @click="handleReject" :disabled="!rejectReason.trim() || actionLoading" class="flex-1 px-4 py-2 bg-red-primary text-white rounded-lg hover:bg-red-dark disabled:opacity-50 font-medium">
+            {{ actionLoading ? 'Rejecting...' : 'Confirm Reject' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -280,6 +397,13 @@ const showReviewForm = ref(false)
 const currentReview = ref(null)
 const currentReviewIndex = ref(null)
 
+// Approval state
+const isApprover = ref(false)
+const actionLoading = ref(false)
+const actionError = ref('')
+const showRejectModal = ref(false)
+const rejectReason = ref('')
+
 const formatDate = (dateStr) => {
   if (!dateStr) return 'N/A'
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -297,6 +421,16 @@ const getBadgeClass = (level) => {
     'critical': 'badge-critical'
   }
   return levelMap[(level || '').toLowerCase()] || 'badge-medium'
+}
+
+const getReviewStatusClass = (status) => {
+  const map = {
+    'Overdue':       'bg-red-100 text-red-700',
+    'Due Soon':      'bg-yellow-100 text-yellow-700',
+    'On Track':      'bg-green-100 text-green-700',
+    'Not Scheduled': 'bg-gray-100 text-gray-500',
+  }
+  return map[status] || 'bg-gray-100 text-gray-500'
 }
 
 const getRatingBgClass = (rating) => {
@@ -330,15 +464,12 @@ const handleReviewSubmit = async ({ data, index }) => {
 
   let result
   if (index !== null) {
-    // Update existing review
     result = await api.updateRiskReview(riskName, index, data)
   } else {
-    // Add new review
     result = await api.addRiskReview(riskName, data)
   }
 
   if (result.success) {
-    // Reload the risk to get updated data
     await store.loadRisk(riskName)
     closeReviewForm()
   } else {
@@ -346,8 +477,76 @@ const handleReviewSubmit = async ({ data, index }) => {
   }
 }
 
-onMounted(() => {
+// --- Approval helpers ---
+
+const getStatusClass = (status) => {
+  const map = {
+    'Draft':                   'bg-gray-100 text-gray-600',
+    'Pending Approval':        'bg-orange-100 text-orange-700',
+    'Open':                    'bg-green-100 text-green-700',
+    'Pending Close Approval':  'bg-orange-100 text-orange-700',
+    'Closed':                  'bg-blue-100 text-blue-700',
+    'Rejected':                'bg-red-100 text-red-700',
+  }
+  return map[status] || 'bg-gray-100 text-gray-600'
+}
+
+const handleSubmitForApproval = async () => {
+  actionLoading.value = true
+  actionError.value = ''
+  const result = await api.submitForApproval(store.selectedRisk.name)
+  actionLoading.value = false
+  if (result.success) {
+    await store.loadRisk(store.selectedRisk.name)
+  } else {
+    actionError.value = result.message || 'Failed to submit.'
+  }
+}
+
+const handleRequestClose = async () => {
+  actionLoading.value = true
+  actionError.value = ''
+  const result = await api.requestClose(store.selectedRisk.name)
+  actionLoading.value = false
+  if (result.success) {
+    await store.loadRisk(store.selectedRisk.name)
+  } else {
+    actionError.value = result.message || 'Failed to request closure.'
+  }
+}
+
+const handleApprove = async () => {
+  actionLoading.value = true
+  actionError.value = ''
+  const result = await api.approveRisk(store.selectedRisk.name)
+  actionLoading.value = false
+  if (result.success) {
+    await store.loadRisk(store.selectedRisk.name)
+  } else {
+    actionError.value = result.message || 'Failed to approve.'
+  }
+}
+
+const handleReject = async () => {
+  if (!rejectReason.value.trim()) return
+  actionLoading.value = true
+  actionError.value = ''
+  const result = await api.rejectRisk(store.selectedRisk.name, rejectReason.value)
+  actionLoading.value = false
+  if (result.success) {
+    showRejectModal.value = false
+    rejectReason.value = ''
+    await store.loadRisk(store.selectedRisk.name)
+  } else {
+    actionError.value = result.message || 'Failed to reject.'
+  }
+}
+
+onMounted(async () => {
   const riskId = route.params.id
-  store.loadRisk(riskId)
+  await store.loadRisk(riskId)
+  // Check per-risk approval eligibility (scoped: HOD=dept, PM=project, HOR/DSG=global)
+  const approvalInfo = await api.canApproveRisk(riskId)
+  isApprover.value = approvalInfo.can_approve
 })
 </script>

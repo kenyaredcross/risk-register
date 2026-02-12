@@ -1,0 +1,65 @@
+[
+  {
+    "doctype": "Role",
+    "name": "KRCS HOR",
+    "role_name": "KRCS HOR",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS DSG",
+    "role_name": "KRCS DSG",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS HOD",
+    "role_name": "KRCS HOD",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS Project Manager",
+    "role_name": "KRCS Project Manager",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS RPC",
+    "role_name": "KRCS RPC",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS Finance Officer",
+    "role_name": "KRCS Finance Officer",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS Procurement Manager",
+    "role_name": "KRCS Procurement Manager",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS Logistics Manager",
+    "role_name": "KRCS Logistics Manager",
+    "desk_access": 1,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS HR Manager",
+    "role_name": "KRCS HR Manager",
+    "desk_access": 1,
+    "is_custom": 1
+  }
+]

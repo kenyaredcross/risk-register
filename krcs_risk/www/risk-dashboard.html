@@ -6,7 +6,7 @@
     <title>KRCS Risk Management Dashboard</title>
 
     <!-- Load Vue Dashboard CSS -->
-    <link rel="stylesheet" crossorigin href="/assets/krcs_risk/vue_dashboard/dist/assets/index-COOUrrgv.css">
+    <link rel="stylesheet" crossorigin href="/assets/krcs_risk/vue_dashboard/dist/assets/index-2smW5mgx.css">
 
     <style>
         body {
@@ -27,12 +27,20 @@
     <div id="app"></div>
 
     <script>
-        // Store CSRF token for API calls
-        window.csrf_token = '{{ frappe.session.csrf_token }}';
+        // Initialize frappe object with CSRF token
+        window.frappe = window.frappe || {};
+
+        // Get CSRF token from cookie (Frappe sets it as a cookie)
+        function getCsrfTokenFromCookie() {
+            const match = document.cookie.match(/csrf_token=([^;]+)/);
+            return match ? decodeURIComponent(match[1]) : '';
+        }
+
+        window.frappe.csrf_token = getCsrfTokenFromCookie();
     </script>
 
     <!-- Load Vue Dashboard JS -->
-    <script type="module" crossorigin src="/assets/krcs_risk/vue_dashboard/dist/assets/index-CNKwlKBY.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/krcs_risk/vue_dashboard/dist/assets/vue-vendor-CW2bKMlP.js">
+    <script type="module" crossorigin src="/assets/krcs_risk/vue_dashboard/dist/assets/index-Dy9jsXtf.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/krcs_risk/vue_dashboard/dist/assets/vue-vendor-DORe5Ms0.js">
 </body>
 </html>

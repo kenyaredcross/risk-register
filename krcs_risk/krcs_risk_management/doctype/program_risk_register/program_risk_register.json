@@ -6,10 +6,11 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "program_name",
+  "project",
   "department",
   "unit",
-  "county",
+  "region",
+  "risk_category",
   "col_break_header",
   "status",
   "risk_level",
@@ -29,6 +30,16 @@
   "timeline",
   "col_break_ownership",
   "risk_status",
+  "section_break_review_schedule",
+  "review_frequency",
+  "next_review_due",
+  "col_break_review_schedule",
+  "review_status",
+  "section_break_approval",
+  "approved_by",
+  "approval_date",
+  "col_break_approval",
+  "rejection_reason",
   "section_break_reviews",
   "risk_reviews",
   "section_break_remarks",
@@ -36,11 +47,11 @@
  ],
  "fields": [
   {
-   "fieldname": "program_name",
-   "fieldtype": "Data",
+   "fieldname": "project",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Program / Project Name",
-   "reqd": 1
+   "label": "Project",
+   "options": "Project"
   },
   {
    "fieldname": "department",
@@ -58,10 +69,18 @@
    "options": "Unit"
   },
   {
-   "fieldname": "county",
+   "fieldname": "region",
    "fieldtype": "Link",
-   "label": "County",
-   "options": "County"
+   "in_list_view": 1,
+   "label": "Region",
+   "options": "Region"
+  },
+  {
+   "fieldname": "risk_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Risk Category",
+   "options": "\nStrategic\nOperational\nFinancial\nCompliance\nSafeguarding & Security\nReputational"
   },
   {
    "fieldname": "col_break_header",
@@ -72,8 +91,9 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Register Status",
-   "options": "\nDraft\nActive\nClosed"
+   "label": "Status",
+   "options": "\nDraft\nPending Approval\nOpen\nPending Close Approval\nClosed\nRejected",
+   "read_only": 1
   },
   {
    "fieldname": "risk_level",
@@ -152,10 +172,10 @@
   },
   {
    "fieldname": "risk_owner",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Risk Owner",
-   "options": "\nProgram Manager\nHead of Department (HOD)\nSecretary General (SG)"
+   "options": "User"
   },
   {
    "fieldname": "timeline",
@@ -174,6 +194,66 @@
    "in_list_view": 1,
    "label": "Risk Status",
    "options": "\nOpen\nIn Progress\nMitigated\nEscalated"
+  },
+  {
+   "fieldname": "section_break_review_schedule",
+   "fieldtype": "Section Break",
+   "label": "Review Schedule"
+  },
+  {
+   "fieldname": "review_frequency",
+   "fieldtype": "Select",
+   "label": "Review Frequency",
+   "options": "\nDaily\nWeekly\nFortnightly\nMonthly\nQuarterly\nSemi-Annual\nAnnual",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "next_review_due",
+   "fieldtype": "Date",
+   "label": "Next Review Due",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "col_break_review_schedule",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Not Scheduled",
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "label": "Review Status",
+   "options": "\nNot Scheduled\nOn Track\nDue Soon\nOverdue",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "section_break_approval",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved / Rejected By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "label": "Approval Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break_approval",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rejection_reason",
+   "fieldtype": "Small Text",
+   "label": "Rejection Reason",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_reviews",
@@ -198,7 +278,7 @@
   }
  ],
  "links": [],
- "modified": "2026-02-11 08:42:03.580342",
+ "modified": "2026-02-12 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
  "name": "Program Risk Register",
@@ -227,11 +307,113 @@
    "role": "All",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS HOR",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS DSG",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS HOD",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS Project Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS RPC",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS Finance Officer",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS Procurement Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS Logistics Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS HR Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {"color": "Grey", "title": "Draft"},
+  {"color": "Orange", "title": "Pending Approval"},
+  {"color": "Green", "title": "Open"},
+  {"color": "Orange", "title": "Pending Close Approval"},
+  {"color": "Blue", "title": "Closed"},
+  {"color": "Red", "title": "Rejected"}
+ ],
  "track_changes": 1
 }
