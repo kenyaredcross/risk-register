@@ -2,7 +2,7 @@
  "app": "krcs_risk",
  "charts": [],
  "content": "[{\"id\":\"risk_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">KRCS Risk Management</span>\",\"col\":12}},{\"id\":\"risk_spacer1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"risk_shortcuts_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"risk_dashboard_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Risk Dashboard\",\"col\":3}},{\"id\":\"risk_register_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Program Risk Register\",\"col\":3}},{\"id\":\"risk_spacer2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"risk_management_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Risk Management\",\"col\":6}},{\"id\":\"risk_admin_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Administration\",\"col\":6}}]",
- "creation": "2026-02-12 17:00:00.000000",
+ "creation": "2026-02-12 17:00:00",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -12,71 +12,12 @@
  "idx": 0,
  "indicator_color": "",
  "is_hidden": 0,
- "label": "KRCS Risk Management",
- "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Risk Management",
-   "link_count": 2,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Program Risk Register",
-   "link_count": 0,
-   "link_to": "Program Risk Register",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Risk Category",
-   "link_count": 0,
-   "link_to": "Risk Category",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Administration",
-   "link_count": 2,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Department",
-   "link_count": 0,
-   "link_to": "Department",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Region",
-   "link_count": 0,
-   "link_to": "Region",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  }
- ],
- "modified": "2026-02-12 17:00:00.000000",
+ "label": "Risk",
+ "links": [],
+ "modified": "2026-02-13 12:57:29.072739",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
- "name": "KRCS Risk Management",
+ "name": "Risk",
  "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
@@ -85,15 +26,6 @@
  "roles": [
   {
    "role": "All"
-  },
-  {
-   "role": "KRCS User"
-  },
-  {
-   "role": "KRCS Manager"
-  },
-  {
-   "role": "KRCS Admin"
   }
  ],
  "sequence_id": 30.0,
@@ -113,6 +45,6 @@
    "type": "DocType"
   }
  ],
- "title": "KRCS Risk Management",
+ "title": "Risk",
  "type": "Workspace"
 }

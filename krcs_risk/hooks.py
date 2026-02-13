@@ -11,7 +11,15 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-add_to_apps_screen = []
+add_to_apps_screen = [
+        {
+        "name": "Risk Dashboard",
+        "logo": "/assets/krcs_risk/logo.png",
+        "title": "Risk Dashboard",
+        "route": "/risk-dashboard",
+        "has_permission": "krcs_risk.permissions.check_app_permission",
+    }
+]
 
 # Includes in <head>
 # ------------------
