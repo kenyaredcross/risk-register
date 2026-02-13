@@ -76,6 +76,8 @@ fixtures = [
     {"dt": "Region"},
     {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
     {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},
+    {"dt": "Workspace", "filters": [["name", "=", "KRCS Risk Management"]]},
+    {"dt": "Workspace Sidebar", "filters": [["name", "=", "KRCS Risk Management"]]},
     {"dt": "Desktop Icon", "filters": [["name", "=", "Risk Management"]]},
 ]
 

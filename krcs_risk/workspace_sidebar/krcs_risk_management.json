@@ -1,0 +1,28 @@
+{
+ "app": "krcs_risk",
+ "creation": "2026-02-12 17:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "color-alert",
+ "idx": 0,
+ "items": [
+  {
+   "doctype": "Workspace Sidebar Item",
+   "idx": 1,
+   "label": "Risk Management",
+   "link_to": "KRCS Risk Management",
+   "link_type": "Workspace",
+   "parent": "KRCS Risk Management",
+   "parentfield": "items",
+   "parenttype": "Workspace Sidebar",
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-02-12 17:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "KRCS Risk Management",
+ "name": "KRCS Risk Management",
+ "owner": "Administrator",
+ "parent": "",
+ "title": "KRCS Risk Management"
+}

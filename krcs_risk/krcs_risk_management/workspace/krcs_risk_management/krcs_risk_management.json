@@ -1,14 +1,14 @@
 {
  "app": "krcs_risk",
  "charts": [],
- "content": "[{\"id\":\"header1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">KRCS Risk Management</span>\",\"col\":12}},{\"id\":\"spacer1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"shortcuts_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"portal_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Risk Portal\",\"col\":12}},{\"id\":\"risk_register\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Program Risk Register\",\"col\":3}},{\"id\":\"department\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Department\",\"col\":3}},{\"id\":\"unit\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Unit\",\"col\":3}},{\"id\":\"project\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}}]",
- "creation": "2026-02-12 00:00:00.000000",
+ "content": "[{\"id\":\"risk_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">KRCS Risk Management</span>\",\"col\":12}},{\"id\":\"risk_spacer1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"risk_shortcuts_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"risk_dashboard_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Risk Dashboard\",\"col\":3}},{\"id\":\"risk_register_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Program Risk Register\",\"col\":3}},{\"id\":\"risk_spacer2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"risk_management_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Risk Management\",\"col\":6}},{\"id\":\"risk_admin_card\",\"type\":\"card\",\"data\":{\"card_name\":\"Administration\",\"col\":6}}]",
+ "creation": "2026-02-12 17:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
- "icon": "risk",
+ "icon": "color-alert",
  "idx": 0,
  "indicator_color": "",
  "is_hidden": 0,
@@ -17,8 +17,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Risk Register",
-   "link_count": 1,
+   "label": "Risk Management",
+   "link_count": 2,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -36,8 +36,18 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Master Data",
-   "link_count": 4,
+   "label": "Risk Category",
+   "link_count": 0,
+   "link_to": "Risk Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Administration",
+   "link_count": 2,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -48,16 +58,6 @@
    "label": "Department",
    "link_count": 0,
    "link_to": "Department",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Unit",
-   "link_count": 0,
-   "link_to": "Unit",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -71,19 +71,9 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project",
-   "link_count": 0,
-   "link_to": "Project",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
   }
  ],
- "modified": "2026-02-12 00:00:00.000000",
+ "modified": "2026-02-12 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "KRCS Risk Management",
  "name": "KRCS Risk Management",
@@ -97,24 +87,21 @@
    "role": "All"
   },
   {
-   "role": "System Manager"
+   "role": "KRCS User"
   },
   {
-   "role": "KRCS HOR"
+   "role": "KRCS Manager"
   },
   {
-   "role": "KRCS DSG"
-  },
-  {
-   "role": "KRCS HOD"
+   "role": "KRCS Admin"
   }
  ],
- "sequence_id": 1.0,
+ "sequence_id": 30.0,
  "shortcuts": [
   {
-   "color": "Green",
-   "doc_view": "",
-   "label": "Open Risk Portal",
+   "color": "Red",
+   "doc_view": "Dashboard",
+   "label": "Risk Dashboard",
    "type": "URL",
    "url": "/risk-dashboard"
   },
@@ -123,27 +110,6 @@
    "doc_view": "List",
    "label": "Program Risk Register",
    "link_to": "Program Risk Register",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Department",
-   "link_to": "Department",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Unit",
-   "link_to": "Unit",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Project",
-   "link_to": "Project",
    "type": "DocType"
   }
  ],
