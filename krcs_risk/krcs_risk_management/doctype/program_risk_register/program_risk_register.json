@@ -13,6 +13,7 @@
   "risk_category",
   "col_break_header",
   "status",
+  "workflow_state",
   "risk_level",
   "section_break_risk_details",
   "risk_description",
@@ -94,6 +95,14 @@
    "label": "Status",
    "options": "\nDraft\nPending Approval\nOpen\nPending Close Approval\nClosed\nRejected",
    "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "risk_level",

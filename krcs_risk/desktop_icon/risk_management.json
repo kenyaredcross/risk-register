@@ -1,0 +1,20 @@
+{
+ "app": "krcs_risk",
+ "bg_color": "red",
+ "creation": "2026-02-12 17:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "Folder",
+ "idx": 0,
+ "label": "Risk Management",
+ "link_to": "KRCS Risk Management",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-02-12 17:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Risk Management",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

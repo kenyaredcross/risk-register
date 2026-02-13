@@ -424,6 +424,36 @@ KRCS_ROLES = [
 
 
 @frappe.whitelist()
+def get_current_user():
+    """
+    Return the current user's information including their department.
+    """
+    user = frappe.session.user
+    user_doc = frappe.get_doc("User", user)
+
+    department = None
+    department_name = None
+    if user_doc.krcs_department:
+        department = user_doc.krcs_department
+        department_name = frappe.db.get_value("Department", department, "department_name")
+
+    roles = frappe.get_all(
+        "Has Role",
+        filters={"parent": user, "role": ["in", KRCS_ROLES]},
+        pluck="role"
+    )
+
+    return {
+        "name": user,
+        "full_name": user_doc.full_name,
+        "email": user_doc.email,
+        "department": department,
+        "department_name": department_name,
+        "krcs_roles": roles
+    }
+
+
+@frappe.whitelist()
 def get_users():
     """
     Return all non-system users with their KRCS roles.
@@ -433,10 +463,10 @@ def get_users():
     users = frappe.get_all(
         "User",
         filters={"name": ["not in", ["Guest", "Administrator"]], "user_type": "System User"},
-        fields=["name", "full_name", "email", "enabled", "creation"],
+        fields=["name", "full_name", "email", "enabled", "creation", "krcs_department"],
         order_by="full_name asc"
     )
-    # Attach roles to each user
+    # Attach roles and department name to each user
     for u in users:
         roles = frappe.get_all(
             "Has Role",
@@ -444,13 +474,19 @@ def get_users():
             pluck="role"
         )
         u["krcs_roles"] = roles
+        # Get department name if department is set
+        if u.get("krcs_department"):
+            dept = frappe.db.get_value("Department", u["krcs_department"], "department_name")
+            u["department_name"] = dept
+        else:
+            u["department_name"] = None
     return users
 
 
 @frappe.whitelist()
-def create_user(email, first_name, last_name="", roles=None):
+def create_user(email, first_name, last_name="", department=None, roles=None):
     """
-    Create a new System User and assign KRCS roles.
+    Create a new System User and assign KRCS roles and department.
     System Manager only.
     roles: JSON string of role names list.
     """
@@ -467,6 +503,7 @@ def create_user(email, first_name, last_name="", roles=None):
             "last_name": last_name,
             "user_type": "System User",
             "send_welcome_email": 0,
+            "krcs_department": department if department else None,
             "roles": [{"role": r} for r in role_list if r in KRCS_ROLES],
         })
         doc.insert(ignore_permissions=True)
@@ -478,9 +515,9 @@ def create_user(email, first_name, last_name="", roles=None):
 
 
 @frappe.whitelist()
-def update_user_roles(user, roles=None):
+def update_user(user, department=None, roles=None):
     """
-    Replace the KRCS roles for an existing user.
+    Update user's department and KRCS roles.
     roles: JSON string of role names list.
     System Manager only.
     """
@@ -492,17 +529,33 @@ def update_user_roles(user, roles=None):
         role_list = [r for r in role_list if r in KRCS_ROLES]
 
         user_doc = frappe.get_doc("User", user)
+
+        # Update department
+        user_doc.krcs_department = department if department else None
+
         # Remove existing KRCS roles
         user_doc.roles = [r for r in user_doc.roles if r.role not in KRCS_ROLES]
         # Add new KRCS roles
         for r in role_list:
             user_doc.append("roles", {"role": r})
+
         user_doc.save(ignore_permissions=True)
         frappe.db.commit()
-        return {"success": True, "message": "Roles updated."}
+        return {"success": True, "message": "User updated."}
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), _("Error updating user roles"))
+        frappe.log_error(frappe.get_traceback(), _("Error updating user"))
         return {"success": False, "message": str(e)}
+
+
+@frappe.whitelist()
+def update_user_roles(user, roles=None):
+    """
+    Replace the KRCS roles for an existing user.
+    roles: JSON string of role names list.
+    System Manager only.
+    Legacy function - use update_user instead.
+    """
+    return update_user(user, None, roles)
 
 
 @frappe.whitelist()
@@ -525,10 +578,17 @@ def get_admin_meta():
     """
     Return metadata needed by the admin panel:
     - KRCS roles list
+    - Departments list
     - Whether current user is System Manager
     """
     roles = _get_user_roles()
+    departments = frappe.get_all(
+        "Department",
+        fields=["name", "department_name"],
+        order_by="department_name asc"
+    )
     return {
         "is_system_manager": "System Manager" in roles,
         "krcs_roles": KRCS_ROLES,
+        "departments": departments,
     }

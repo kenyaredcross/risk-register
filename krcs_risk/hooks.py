@@ -75,6 +75,8 @@ app_license = "mit"
 fixtures = [
     {"dt": "Region"},
     {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
+    {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},
+    {"dt": "Desktop Icon", "filters": [["name", "=", "Risk Management"]]},
 ]
 
 # Website Route Rules
@@ -100,6 +102,10 @@ website_route_rules = [
 
 # before_install = "krcs_risk.install.before_install"
 # after_install = "krcs_risk.install.after_install"
+
+# Migrate
+# ------------
+after_migrate = "krcs_risk.install.after_migrate"
 
 # Uninstallation
 # ------------
