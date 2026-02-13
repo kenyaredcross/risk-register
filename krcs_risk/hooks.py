@@ -11,15 +11,7 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "krcs_risk",
-# 		"logo": "/assets/krcs_risk/logo.png",
-# 		"title": "KRCS Risk Management",
-# 		"route": "/krcs_risk",
-# 		"has_permission": "krcs_risk.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = []
 
 # Includes in <head>
 # ------------------
@@ -78,7 +70,7 @@ fixtures = [
     {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},
     {"dt": "Workspace", "filters": [["name", "=", "KRCS Risk Management"]]},
     {"dt": "Workspace Sidebar", "filters": [["name", "=", "KRCS Risk Management"]]},
-    {"dt": "Desktop Icon", "filters": [["name", "=", "Risk Management"]]},
+    {"dt": "Desktop Icon", "filters": [["name", "in", ["Risk Management", "Risk Dashboard", "KRCS Risk Management"]]]},
 ]
 
 # Website Route Rules
