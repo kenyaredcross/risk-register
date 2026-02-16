@@ -71,7 +71,18 @@ export const useAuthStore = defineStore('auth', () => {
    */
   const logout = async () => {
     try {
-      await axios.post('/api/method/logout', {}, { withCredentials: true })
+      // Get CSRF token from cookie
+      const csrfToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrf_token='))
+        ?.split('=')[1]
+
+      await axios.post('/api/method/logout', {}, {
+        withCredentials: true,
+        headers: {
+          'X-Frappe-CSRF-Token': csrfToken || 'fetch'
+        }
+      })
     } catch (err) {
       console.error('Logout error:', err)
       // ignore errors — clear state regardless

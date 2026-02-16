@@ -181,10 +181,10 @@
   },
   {
    "fieldname": "risk_owner",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Risk Owner",
-   "options": "User"
+   "options": "\nKRCS HOR\nKRCS DSG\nKRCS HOD\nKRCS Project Manager\nKRCS RPC\nKRCS Finance Officer\nKRCS Procurement Manager\nKRCS Logistics Manager\nKRCS HR Manager"
   },
   {
    "fieldname": "timeline",

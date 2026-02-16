@@ -13,31 +13,16 @@
 
     <meta name="theme-color" content="#191919" />
 
+    <!-- Initialize window.frappe BEFORE the Vue module so frappe.csrf_token is available -->
+    <script>window.frappe = window.frappe || {};</script>
+    <!-- csrf_token -->
+
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <link rel="modulepreload" crossorigin href="/assets/krcs_risk/risk_dashboard/assets/vue-vendor-Bo70p1Jw.js">
     <link rel="stylesheet" crossorigin href="/assets/krcs_risk/risk_dashboard/assets/index-DvkCfbbn.css">
-    <script type="module" crossorigin src="/assets/krcs_risk/risk_dashboard/assets/index-DMXc1wYA.js"></script>
+    <script type="module" crossorigin src="/assets/krcs_risk/risk_dashboard/assets/index-BVRvbTi5.js"></script>
   </head>
   <body>
     <div id="app"></div>
-
-    <script>
-      // Initialize frappe object with CSRF token
-      window.frappe = window.frappe || {};
-      window.csrf_token = '{{ csrf_token }}';
-
-      // Get CSRF token from cookie (Frappe sets it as a cookie)
-      function getCsrfTokenFromCookie() {
-        const match = document.cookie.match(/csrf_token=([^;]+)/);
-        return match ? decodeURIComponent(match[1]) : '';
-      }
-
-      window.frappe.csrf_token = getCsrfTokenFromCookie();
-
-      // Boot data from Frappe backend (optional, if needed)
-      if ('{{ boot }}'.trim()) {
-        frappe.boot = JSON.parse({{ boot }});
-      }
-    </script>
   </body>
 </html>

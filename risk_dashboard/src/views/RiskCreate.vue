@@ -54,22 +54,84 @@
               </div>
             </div>
           </div>
-          <div>
+          <div class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Department *</label>
-            <select v-model="form.department" required class="input w-full bg-light-gray" disabled>
-              <option value="">Select Department</option>
-              <option v-for="dept in departments" :key="dept.name" :value="dept.name">{{ dept.department_name }}</option>
-            </select>
-            <p v-if="currentUser && currentUser.department" class="text-xs text-medium-gray mt-1">
-              Auto-populated from your user profile
-            </p>
+            <!-- Hidden input carries the required constraint on the actual value -->
+            <input type="hidden" :value="form.department" required />
+            <input
+              v-model="departmentSearch"
+              @focus="departmentDropdownOpen = true"
+              @blur="closeDepartmentDropdown"
+              type="text"
+              class="input w-full"
+              placeholder="Search or select department..."
+            />
+            <div
+              v-if="departmentDropdownOpen"
+              class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto"
+            >
+              <button
+                type="button"
+                @mousedown.prevent="openCreateDepartmentModal"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Create New Department</span>
+              </button>
+              <button
+                v-for="dept in filteredDepartments"
+                :key="dept.name"
+                type="button"
+                @mousedown.prevent="selectDepartment(dept)"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray"
+              >
+                {{ dept.department_name }}
+              </button>
+              <div v-if="filteredDepartments.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">
+                No departments found
+              </div>
+            </div>
           </div>
-          <div>
+          <div class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Unit</label>
-            <select v-model="form.unit" class="input w-full" :disabled="!form.department">
-              <option value="">Select Unit</option>
-              <option v-for="unit in filteredUnits" :key="unit.name" :value="unit.name">{{ unit.unit_name }}</option>
-            </select>
+            <input
+              v-model="unitSearch"
+              @focus="unitDropdownOpen = true"
+              @blur="closeUnitDropdown"
+              type="text"
+              class="input w-full"
+              :placeholder="form.department ? 'Search or select unit...' : 'Select a department first'"
+              :disabled="!form.department"
+            />
+            <div
+              v-if="unitDropdownOpen && form.department"
+              class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto"
+            >
+              <button
+                type="button"
+                @mousedown.prevent="openCreateUnitModal"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Create New Unit</span>
+              </button>
+              <button
+                v-for="unit in filteredUnits"
+                :key="unit.name"
+                type="button"
+                @mousedown.prevent="selectUnit(unit)"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray"
+              >
+                {{ unit.unit_name }}
+              </button>
+              <div v-if="filteredUnits.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">
+                No units found
+              </div>
+            </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Region</label>
@@ -94,9 +156,15 @@
             <label class="block text-sm font-medium text-charcoal mb-1">Risk Owner</label>
             <select v-model="form.risk_owner" class="input w-full">
               <option value="">Select Risk Owner</option>
-              <option v-for="user in krcsUsers" :key="user.name" :value="user.name">
-                {{ user.full_name }} ({{ user.roles_display }})
-              </option>
+              <option value="KRCS HOR">KRCS HOR</option>
+              <option value="KRCS DSG">KRCS DSG</option>
+              <option value="KRCS HOD">KRCS HOD</option>
+              <option value="KRCS Project Manager">KRCS Project Manager</option>
+              <option value="KRCS RPC">KRCS RPC</option>
+              <option value="KRCS Finance Officer">KRCS Finance Officer</option>
+              <option value="KRCS Procurement Manager">KRCS Procurement Manager</option>
+              <option value="KRCS Logistics Manager">KRCS Logistics Manager</option>
+              <option value="KRCS HR Manager">KRCS HR Manager</option>
             </select>
           </div>
         </div>
@@ -342,6 +410,69 @@
         </div>
       </div>
     </div>
+
+    <!-- Create Department Modal -->
+    <div v-if="createDepartmentModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="closeCreateDepartmentModal">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" @click.stop>
+        <div class="px-6 py-4 border-b border-light-border">
+          <h3 class="text-xl font-bold text-charcoal">Create New Department</h3>
+        </div>
+        <div class="px-6 py-4 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-charcoal mb-1">Department Name *</label>
+            <input
+              v-model="newDepartmentName"
+              type="text"
+              class="input w-full"
+              placeholder="Enter department name"
+              @keydown.enter="handleCreateDepartment"
+            />
+          </div>
+          <div v-if="createDepartmentError" class="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p class="text-sm text-red-700">{{ createDepartmentError }}</p>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-light-border flex justify-end space-x-3">
+          <button type="button" @click="closeCreateDepartmentModal" class="btn btn-outline">Cancel</button>
+          <button type="button" @click="handleCreateDepartment" :disabled="creatingDepartment" class="btn btn-primary">
+            {{ creatingDepartment ? 'Creating...' : 'Create Department' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Unit Modal -->
+    <div v-if="createUnitModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="closeCreateUnitModal">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" @click.stop>
+        <div class="px-6 py-4 border-b border-light-border">
+          <h3 class="text-xl font-bold text-charcoal">Create New Unit</h3>
+        </div>
+        <div class="px-6 py-4 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-charcoal mb-1">Unit Name *</label>
+            <input
+              v-model="newUnitName"
+              type="text"
+              class="input w-full"
+              placeholder="Enter unit name"
+              @keydown.enter="handleCreateUnit"
+            />
+          </div>
+          <div class="bg-light-gray rounded-lg px-4 py-2 text-sm text-medium-gray">
+            Will be created under: <span class="font-medium text-charcoal">{{ selectedDepartmentName }}</span>
+          </div>
+          <div v-if="createUnitError" class="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p class="text-sm text-red-700">{{ createUnitError }}</p>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-light-border flex justify-end space-x-3">
+          <button type="button" @click="closeCreateUnitModal" class="btn btn-outline">Cancel</button>
+          <button type="button" @click="handleCreateUnit" :disabled="creatingUnit" class="btn btn-primary">
+            {{ creatingUnit ? 'Creating...' : 'Create Unit' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -361,7 +492,6 @@ const departments = ref([])
 const projects = ref([])
 const regions = ref([])
 const allUnits = ref([])
-const krcsUsers = ref([])
 const currentUser = ref(null)
 
 // Project searchable dropdown state
@@ -375,6 +505,27 @@ const newProjectName = ref('')
 const newProjectCode = ref('')
 const creatingProject = ref(false)
 const createProjectError = ref('')
+
+// Department searchable dropdown state
+const departmentSearch = ref('')
+const departmentDropdownOpen = ref(false)
+const selectedDepartmentName = ref('')
+
+// Create department modal state
+const createDepartmentModalOpen = ref(false)
+const newDepartmentName = ref('')
+const creatingDepartment = ref(false)
+const createDepartmentError = ref('')
+
+// Unit searchable dropdown state
+const unitSearch = ref('')
+const unitDropdownOpen = ref(false)
+
+// Create unit modal state
+const createUnitModalOpen = ref(false)
+const newUnitName = ref('')
+const creatingUnit = ref(false)
+const createUnitError = ref('')
 
 const form = ref({
   project: '',
@@ -404,9 +555,19 @@ const riskLevel = computed(() => {
   return 'Low'
 })
 
+const filteredDepartments = computed(() => {
+  if (!departmentSearch.value.trim()) return departments.value
+  const search = departmentSearch.value.toLowerCase()
+  return departments.value.filter(d =>
+    d.department_name.toLowerCase().includes(search)
+  )
+})
+
 const filteredUnits = computed(() => {
-  if (!form.value.department) return []
-  return allUnits.value.filter(u => u.department === form.value.department)
+  const deptUnits = allUnits.value.filter(u => u.department === form.value.department)
+  if (!unitSearch.value.trim()) return deptUnits
+  const search = unitSearch.value.toLowerCase()
+  return deptUnits.filter(u => u.unit_name.toLowerCase().includes(search))
 })
 
 const filteredProjects = computed(() => {
@@ -465,6 +626,117 @@ const closeProjectDropdown = () => {
   setTimeout(() => {
     projectDropdownOpen.value = false
   }, 200)
+}
+
+// --- Department dropdown ---
+const selectDepartment = (dept) => {
+  form.value.department = dept.name
+  selectedDepartmentName.value = dept.department_name
+  departmentSearch.value = dept.department_name
+  departmentDropdownOpen.value = false
+  // Clear unit when department changes
+  form.value.unit = ''
+  unitSearch.value = ''
+}
+
+const closeDepartmentDropdown = () => {
+  setTimeout(() => {
+    departmentDropdownOpen.value = false
+  }, 200)
+}
+
+const openCreateDepartmentModal = () => {
+  departmentDropdownOpen.value = false
+  createDepartmentModalOpen.value = true
+  newDepartmentName.value = ''
+  createDepartmentError.value = ''
+}
+
+const closeCreateDepartmentModal = () => {
+  createDepartmentModalOpen.value = false
+  newDepartmentName.value = ''
+  createDepartmentError.value = ''
+}
+
+const handleCreateDepartment = async () => {
+  if (!newDepartmentName.value.trim()) {
+    createDepartmentError.value = 'Department name is required'
+    return
+  }
+  creatingDepartment.value = true
+  createDepartmentError.value = ''
+  try {
+    const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.create_department', {
+      department_name: newDepartmentName.value.trim()
+    })
+    const result = res.data.message || {}
+    if (result.success) {
+      const newDept = { name: result.name, department_name: newDepartmentName.value.trim(), units: [] }
+      departments.value.push(newDept)
+      selectDepartment(newDept)
+      closeCreateDepartmentModal()
+    } else {
+      createDepartmentError.value = result.message || 'Failed to create department.'
+    }
+  } catch (err) {
+    createDepartmentError.value = err.response?.data?.message || 'An error occurred while creating the department.'
+  } finally {
+    creatingDepartment.value = false
+  }
+}
+
+// --- Unit dropdown ---
+const selectUnit = (unit) => {
+  form.value.unit = unit.name
+  unitSearch.value = unit.unit_name
+  unitDropdownOpen.value = false
+}
+
+const closeUnitDropdown = () => {
+  setTimeout(() => {
+    unitDropdownOpen.value = false
+  }, 200)
+}
+
+const openCreateUnitModal = () => {
+  unitDropdownOpen.value = false
+  createUnitModalOpen.value = true
+  newUnitName.value = ''
+  createUnitError.value = ''
+}
+
+const closeCreateUnitModal = () => {
+  createUnitModalOpen.value = false
+  newUnitName.value = ''
+  createUnitError.value = ''
+}
+
+const handleCreateUnit = async () => {
+  if (!newUnitName.value.trim()) {
+    createUnitError.value = 'Unit name is required'
+    return
+  }
+  creatingUnit.value = true
+  createUnitError.value = ''
+  try {
+    const res = await axios.post('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.create_unit', {
+      unit_name: newUnitName.value.trim(),
+      department: form.value.department
+    })
+    const result = res.data.message || {}
+    if (result.success) {
+      const newUnit = { name: result.name, unit_name: newUnitName.value.trim(), department: form.value.department }
+      allUnits.value.push(newUnit)
+      selectUnit(newUnit)
+      closeCreateUnitModal()
+    } else {
+      createUnitError.value = result.message || 'Failed to create unit.'
+    }
+  } catch (err) {
+    createUnitError.value = err.response?.data?.message || 'An error occurred while creating the unit.'
+  } finally {
+    creatingUnit.value = false
+  }
 }
 
 const openCreateProjectModal = () => {
@@ -538,15 +810,21 @@ const loadMasterData = async () => {
     // Fetch current user and auto-populate department
     const user = await api.getCurrentUser()
     currentUser.value = user
-    if (user && user.department) {
-      form.value.department = user.department
-    }
 
     // Fetch departments with units
     const deptRes = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_departments')
     const depts = deptRes.data.message || []
     departments.value = depts
     allUnits.value = depts.flatMap(d => d.units || [])
+
+    if (user && user.department) {
+      const userDept = depts.find(d => d.name === user.department)
+      if (userDept) {
+        form.value.department = userDept.name
+        selectedDepartmentName.value = userDept.department_name
+        departmentSearch.value = userDept.department_name
+      }
+    }
 
     // Fetch projects
     const projRes = await axios.get('/api/resource/Project', {
@@ -560,9 +838,6 @@ const loadMasterData = async () => {
     })
     regions.value = regRes.data.data || []
 
-    // Fetch users with KRCS roles
-    const usersRes = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_users')
-    krcsUsers.value = usersRes.data.message || []
   } catch (err) {
     console.error('Failed to load master data', err)
   }
