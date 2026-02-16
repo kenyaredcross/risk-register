@@ -11,11 +11,39 @@
       <p class="text-medium-gray">Submit a new risk to the register</p>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="space-y-6">
-      <!-- Basic Information -->
+    <!-- Step Indicator -->
+    <div class="flex items-center mb-8">
+      <template v-for="(s, i) in steps" :key="i">
+        <div class="flex items-center">
+          <div
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors"
+            :class="currentStep > i + 1
+              ? 'bg-green-500 text-white'
+              : currentStep === i + 1
+                ? 'bg-red-primary text-white'
+                : 'bg-light-gray text-medium-gray'"
+          >
+            <svg v-if="currentStep > i + 1" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+            <span v-else>{{ i + 1 }}</span>
+          </div>
+          <span
+            class="ml-2 text-sm font-medium hidden sm:block"
+            :class="currentStep === i + 1 ? 'text-charcoal' : 'text-medium-gray'"
+          >{{ s }}</span>
+        </div>
+        <div v-if="i < steps.length - 1" class="flex-1 h-px mx-3" :class="currentStep > i + 1 ? 'bg-green-500' : 'bg-light-border'" />
+      </template>
+    </div>
+
+    <!-- ── Step 1: Basic Information ── -->
+    <div v-if="currentStep === 1" class="space-y-6">
       <div class="card">
         <h2 class="card-header">Basic Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- Project -->
           <div class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Project</label>
             <input
@@ -26,38 +54,24 @@
               class="input w-full"
               placeholder="Search or select project..."
             />
-            <div
-              v-if="projectDropdownOpen"
-              class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto"
-            >
-              <button
-                type="button"
-                @mousedown.prevent="openCreateProjectModal"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <div v-if="projectDropdownOpen" class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto">
+              <button type="button" @mousedown.prevent="openCreateProjectModal"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                 <span>Create New Project</span>
               </button>
-              <button
-                v-for="proj in filteredProjects"
-                :key="proj.name"
-                type="button"
-                @mousedown.prevent="selectProject(proj)"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray"
-              >
+              <button v-for="proj in filteredProjects" :key="proj.name" type="button"
+                @mousedown.prevent="selectProject(proj)" class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray">
                 {{ proj.project_name }}
               </button>
-              <div v-if="filteredProjects.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">
-                No projects found
-              </div>
+              <div v-if="filteredProjects.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">No projects found</div>
             </div>
           </div>
+
+          <!-- Department -->
           <div class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Department *</label>
-            <!-- Hidden input carries the required constraint on the actual value -->
-            <input type="hidden" :value="form.department" required />
+            <input type="hidden" :value="form.department" />
             <input
               v-model="departmentSearch"
               @focus="departmentDropdownOpen = true"
@@ -66,34 +80,21 @@
               class="input w-full"
               placeholder="Search or select department..."
             />
-            <div
-              v-if="departmentDropdownOpen"
-              class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto"
-            >
-              <button
-                type="button"
-                @mousedown.prevent="openCreateDepartmentModal"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <div v-if="departmentDropdownOpen" class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto">
+              <button type="button" @mousedown.prevent="openCreateDepartmentModal"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                 <span>Create New Department</span>
               </button>
-              <button
-                v-for="dept in filteredDepartments"
-                :key="dept.name"
-                type="button"
-                @mousedown.prevent="selectDepartment(dept)"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray"
-              >
+              <button v-for="dept in filteredDepartments" :key="dept.name" type="button"
+                @mousedown.prevent="selectDepartment(dept)" class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray">
                 {{ dept.department_name }}
               </button>
-              <div v-if="filteredDepartments.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">
-                No departments found
-              </div>
+              <div v-if="filteredDepartments.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">No departments found</div>
             </div>
           </div>
+
+          <!-- Unit -->
           <div class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Unit</label>
             <input
@@ -105,34 +106,21 @@
               :placeholder="form.department ? 'Search or select unit...' : 'Select a department first'"
               :disabled="!form.department"
             />
-            <div
-              v-if="unitDropdownOpen && form.department"
-              class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto"
-            >
-              <button
-                type="button"
-                @mousedown.prevent="openCreateUnitModal"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <div v-if="unitDropdownOpen && form.department" class="absolute z-10 mt-1 w-full bg-white border border-light-border rounded-lg shadow-lg max-h-60 overflow-auto">
+              <button type="button" @mousedown.prevent="openCreateUnitModal"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray flex items-center space-x-2 text-red-primary font-medium border-b border-light-border">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                 <span>Create New Unit</span>
               </button>
-              <button
-                v-for="unit in filteredUnits"
-                :key="unit.name"
-                type="button"
-                @mousedown.prevent="selectUnit(unit)"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray"
-              >
+              <button v-for="unit in filteredUnits" :key="unit.name" type="button"
+                @mousedown.prevent="selectUnit(unit)" class="w-full text-left px-4 py-2 text-sm hover:bg-light-gray">
                 {{ unit.unit_name }}
               </button>
-              <div v-if="filteredUnits.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">
-                No units found
-              </div>
+              <div v-if="filteredUnits.length === 0" class="px-4 py-3 text-sm text-medium-gray text-center">No units found</div>
             </div>
           </div>
+
+          <!-- Region -->
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Region</label>
             <select v-model="form.region" class="input w-full">
@@ -140,9 +128,11 @@
               <option v-for="region in regions" :key="region.name" :value="region.name">{{ region.region_name }}</option>
             </select>
           </div>
+
+          <!-- Risk Category -->
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Risk Category *</label>
-            <select v-model="form.risk_category" required class="input w-full">
+            <select v-model="form.risk_category" class="input w-full">
               <option value="">Select Category</option>
               <option value="Financial">Financial</option>
               <option value="Operational">Operational</option>
@@ -152,6 +142,8 @@
               <option value="Technology">Technology</option>
             </select>
           </div>
+
+          <!-- Risk Owner -->
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Risk Owner</label>
             <select v-model="form.risk_owner" class="input w-full">
@@ -170,12 +162,29 @@
         </div>
       </div>
 
+      <div v-if="step1Error" class="card bg-red-50 border border-red-200">
+        <p class="text-sm text-red-700">{{ step1Error }}</p>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" @click="nextStep" class="btn btn-primary">
+          Next: Risk Details
+          <svg class="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Risk Details ── -->
+    <div v-if="currentStep === 2" class="space-y-6">
+
       <!-- Risk Description -->
       <div class="card">
         <h2 class="card-header">Risk Description</h2>
         <div>
           <label class="block text-sm font-medium text-charcoal mb-1">Risk Description *</label>
-          <textarea v-model="form.risk_description" required rows="4" class="input w-full" placeholder="Describe the risk..."></textarea>
+          <textarea v-model="form.risk_description" rows="4" class="input w-full" placeholder="Describe the risk..."></textarea>
         </div>
       </div>
 
@@ -184,9 +193,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold text-charcoal">Possible Causes</h2>
           <button type="button" @click="addCause" class="btn btn-outline btn-sm">
-            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
             Add Cause
           </button>
         </div>
@@ -195,29 +202,20 @@
         </div>
         <div v-else class="space-y-3">
           <div v-for="(cause, index) in form.possible_causes" :key="index" class="flex gap-2">
-            <textarea
-              v-model="cause.cause_description"
-              rows="2"
-              class="input w-full"
-              placeholder="Describe a possible cause..."
-            ></textarea>
+            <textarea v-model="cause.cause_description" rows="2" class="input w-full" placeholder="Describe a possible cause..."></textarea>
             <button type="button" @click="removeCause(index)" class="text-red-primary hover:text-red-600">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Effects / Consequences -->
+      <!-- Effects -->
       <div class="card">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold text-charcoal">Effects / Consequences</h2>
           <button type="button" @click="addEffect" class="btn btn-outline btn-sm">
-            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
             Add Effect
           </button>
         </div>
@@ -226,16 +224,9 @@
         </div>
         <div v-else class="space-y-3">
           <div v-for="(effect, index) in form.effects" :key="index" class="flex gap-2">
-            <textarea
-              v-model="effect.consequence_description"
-              rows="2"
-              class="input w-full"
-              placeholder="Describe a possible effect/consequence..."
-            ></textarea>
+            <textarea v-model="effect.consequence_description" rows="2" class="input w-full" placeholder="Describe a possible effect/consequence..."></textarea>
             <button type="button" @click="removeEffect(index)" class="text-red-primary hover:text-red-600">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         </div>
@@ -246,9 +237,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold text-charcoal">Mitigating Actions</h2>
           <button type="button" @click="addAction" class="btn btn-outline btn-sm">
-            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
             Add Action
           </button>
         </div>
@@ -258,50 +247,56 @@
         <div v-else class="space-y-4">
           <div v-for="(action, index) in form.mitigating_actions" :key="index" class="border border-light-border rounded-lg p-4 relative">
             <button type="button" @click="removeAction(index)" class="absolute top-2 right-2 text-red-primary hover:text-red-600">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-charcoal mb-1">Action Description *</label>
-                <textarea
-                  v-model="action.action_description"
-                  rows="2"
-                  class="input w-full"
-                  placeholder="Describe the mitigating action..."
-                ></textarea>
+                <textarea v-model="action.action_description" rows="2" class="input w-full" placeholder="Describe the mitigating action..."></textarea>
               </div>
               <div>
                 <label class="block text-sm font-medium text-charcoal mb-1">Responsible Person</label>
-                <input
-                  v-model="action.responsible_person"
-                  type="text"
-                  class="input w-full"
-                  placeholder="Person responsible"
-                />
+                <input v-model="action.responsible_person" type="text" class="input w-full" placeholder="Person responsible" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-charcoal mb-1">Deadline</label>
-                <input
-                  v-model="action.deadline"
-                  type="date"
-                  class="input w-full"
-                />
+                <input v-model="action.deadline" type="date" class="input w-full" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Risk Assessment -->
+      <div v-if="step2Error" class="card bg-red-50 border border-red-200">
+        <p class="text-sm text-red-700">{{ step2Error }}</p>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" @click="prevStep" class="btn btn-outline">
+          <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+        <button type="button" @click="nextStep" class="btn btn-primary">
+          Next: Assessment
+          <svg class="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 3: Assessment & Schedule ── -->
+    <div v-if="currentStep === 3" class="space-y-6">
+
       <div class="card">
         <h2 class="card-header">Risk Assessment</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-charcoal mb-2">Likelihood (1-5) *</label>
             <div class="flex items-center space-x-3">
-              <input v-model.number="form.likelihood" type="range" min="1" max="5" required class="flex-1" />
+              <input v-model.number="form.likelihood" type="range" min="1" max="5" class="flex-1 slider-red" />
               <span class="text-2xl font-bold text-charcoal w-8 text-center">{{ form.likelihood }}</span>
             </div>
             <div class="text-xs text-medium-gray mt-1">1 = Very Unlikely, 5 = Very Likely</div>
@@ -309,7 +304,7 @@
           <div>
             <label class="block text-sm font-medium text-charcoal mb-2">Impact (1-5) *</label>
             <div class="flex items-center space-x-3">
-              <input v-model.number="form.impact" type="range" min="1" max="5" required class="flex-1" />
+              <input v-model.number="form.impact" type="range" min="1" max="5" class="flex-1 slider-red" />
               <span class="text-2xl font-bold text-charcoal w-8 text-center">{{ form.impact }}</span>
             </div>
             <div class="text-xs text-medium-gray mt-1">1 = Negligible, 5 = Catastrophic</div>
@@ -323,7 +318,6 @@
         </div>
       </div>
 
-      <!-- Review Schedule -->
       <div class="card">
         <h2 class="card-header">Review Schedule</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -347,7 +341,6 @@
         </div>
       </div>
 
-      <!-- Additional Information -->
       <div class="card">
         <h2 class="card-header">Additional Information</h2>
         <div>
@@ -356,19 +349,118 @@
         </div>
       </div>
 
-      <!-- Error Display -->
+      <div class="flex justify-between">
+        <button type="button" @click="prevStep" class="btn btn-outline">
+          <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+        <button type="button" @click="nextStep" class="btn btn-primary">
+          Next: Review
+          <svg class="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 4: Review & Submit ── -->
+    <div v-if="currentStep === 4" class="space-y-6">
+
+      <div class="card">
+        <h2 class="card-header">Review Your Risk</h2>
+
+        <!-- Basic Info summary -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-medium-gray uppercase tracking-wide">Basic Information</h3>
+            <button type="button" @click="currentStep = 1" class="text-xs text-red-primary hover:underline">Edit</button>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div><div class="text-xs text-medium-gray">Project</div><div class="font-medium text-charcoal">{{ projectSearch || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Department</div><div class="font-medium text-charcoal">{{ departmentSearch || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Unit</div><div class="font-medium text-charcoal">{{ unitSearch || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Region</div><div class="font-medium text-charcoal">{{ form.region || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Category</div><div class="font-medium text-charcoal">{{ form.risk_category || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Risk Owner</div><div class="font-medium text-charcoal">{{ form.risk_owner || '—' }}</div></div>
+          </div>
+        </div>
+
+        <div class="border-t border-light-border pt-4 mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-medium-gray uppercase tracking-wide">Risk Details</h3>
+            <button type="button" @click="currentStep = 2" class="text-xs text-red-primary hover:underline">Edit</button>
+          </div>
+          <div class="mb-3">
+            <div class="text-xs text-medium-gray mb-1">Description</div>
+            <div class="text-charcoal">{{ form.risk_description || '—' }}</div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <div class="text-xs text-medium-gray mb-1">Causes ({{ form.possible_causes.filter(c => c.cause_description).length }})</div>
+              <ul class="text-sm text-charcoal space-y-1">
+                <li v-for="(c, i) in form.possible_causes.filter(c => c.cause_description)" :key="i" class="truncate">• {{ c.cause_description }}</li>
+                <li v-if="!form.possible_causes.filter(c => c.cause_description).length" class="text-medium-gray">None</li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-xs text-medium-gray mb-1">Effects ({{ form.effects.filter(e => e.consequence_description).length }})</div>
+              <ul class="text-sm text-charcoal space-y-1">
+                <li v-for="(e, i) in form.effects.filter(e => e.consequence_description)" :key="i" class="truncate">• {{ e.consequence_description }}</li>
+                <li v-if="!form.effects.filter(e => e.consequence_description).length" class="text-medium-gray">None</li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-xs text-medium-gray mb-1">Actions ({{ form.mitigating_actions.filter(a => a.action_description).length }})</div>
+              <ul class="text-sm text-charcoal space-y-1">
+                <li v-for="(a, i) in form.mitigating_actions.filter(a => a.action_description)" :key="i" class="truncate">• {{ a.action_description }}</li>
+                <li v-if="!form.mitigating_actions.filter(a => a.action_description).length" class="text-medium-gray">None</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-light-border pt-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-medium-gray uppercase tracking-wide">Assessment</h3>
+            <button type="button" @click="currentStep = 3" class="text-xs text-red-primary hover:underline">Edit</button>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div><div class="text-xs text-medium-gray">Likelihood</div><div class="font-medium text-charcoal">{{ form.likelihood }} / 5</div></div>
+            <div><div class="text-xs text-medium-gray">Impact</div><div class="font-medium text-charcoal">{{ form.impact }} / 5</div></div>
+            <div>
+              <div class="text-xs text-medium-gray">Overall Rating</div>
+              <div class="font-bold" :class="getRatingColor(overallRating)">{{ overallRating }} — {{ riskLevel }}</div>
+            </div>
+            <div><div class="text-xs text-medium-gray">Review</div><div class="font-medium text-charcoal">{{ form.review_frequency || 'Not scheduled' }}</div></div>
+          </div>
+        </div>
+      </div>
+
       <div v-if="error" class="card bg-red-50 border border-red-200">
         <p class="text-sm text-red-700">{{ error }}</p>
       </div>
 
-      <!-- Actions -->
-      <div class="flex justify-end space-x-3">
-        <button type="button" @click="router.back()" class="btn btn-outline">Cancel</button>
-        <button type="submit" :disabled="loading" class="btn btn-primary">
-          {{ loading ? 'Creating...' : 'Create Risk' }}
+      <div class="flex flex-col sm:flex-row justify-between gap-3">
+        <button type="button" @click="prevStep" class="btn btn-outline">
+          <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
         </button>
+        <div class="flex gap-3 sm:justify-end">
+          <button type="button" @click="handleSubmit(true)" :disabled="loading" class="btn btn-outline">
+            {{ loading ? 'Creating...' : 'Submit & Add Another' }}
+          </button>
+          <button type="button" @click="handleSubmit(false)" :disabled="loading" class="btn btn-primary">
+            {{ loading ? 'Creating...' : 'Submit Risk' }}
+          </button>
+        </div>
       </div>
-    </form>
+    </div>
+
+    <!-- ── Modals ── -->
 
     <!-- Create Project Modal -->
     <div v-if="createProjectModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="closeCreateProjectModal">
@@ -379,23 +471,11 @@
         <div class="px-6 py-4 space-y-4">
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Project Name *</label>
-            <input
-              v-model="newProjectName"
-              type="text"
-              class="input w-full"
-              placeholder="Enter project name"
-              @keydown.enter="handleCreateProject"
-            />
+            <input v-model="newProjectName" type="text" class="input w-full" placeholder="Enter project name" @keydown.enter="handleCreateProject" />
           </div>
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Project Code (ID) *</label>
-            <input
-              v-model="newProjectCode"
-              type="text"
-              class="input w-full"
-              placeholder="Unique project code/ID"
-              @keydown.enter="handleCreateProject"
-            />
+            <input v-model="newProjectCode" type="text" class="input w-full" placeholder="Unique project code/ID" @keydown.enter="handleCreateProject" />
             <p class="text-xs text-medium-gray mt-1">Must be unique identifier for this project</p>
           </div>
           <div v-if="createProjectError" class="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -420,13 +500,7 @@
         <div class="px-6 py-4 space-y-4">
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Department Name *</label>
-            <input
-              v-model="newDepartmentName"
-              type="text"
-              class="input w-full"
-              placeholder="Enter department name"
-              @keydown.enter="handleCreateDepartment"
-            />
+            <input v-model="newDepartmentName" type="text" class="input w-full" placeholder="Enter department name" @keydown.enter="handleCreateDepartment" />
           </div>
           <div v-if="createDepartmentError" class="bg-red-50 border border-red-200 rounded-lg p-3">
             <p class="text-sm text-red-700">{{ createDepartmentError }}</p>
@@ -450,13 +524,7 @@
         <div class="px-6 py-4 space-y-4">
           <div>
             <label class="block text-sm font-medium text-charcoal mb-1">Unit Name *</label>
-            <input
-              v-model="newUnitName"
-              type="text"
-              class="input w-full"
-              placeholder="Enter unit name"
-              @keydown.enter="handleCreateUnit"
-            />
+            <input v-model="newUnitName" type="text" class="input w-full" placeholder="Enter unit name" @keydown.enter="handleCreateUnit" />
           </div>
           <div class="bg-light-gray rounded-lg px-4 py-2 text-sm text-medium-gray">
             Will be created under: <span class="font-medium text-charcoal">{{ selectedDepartmentName }}</span>
@@ -473,6 +541,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -485,48 +554,49 @@ import { useApi } from '../composables/useApi'
 const router = useRouter()
 const api = useApi()
 
+// ── Wizard state ──────────────────────────────────────────────────────────────
+const steps = ['Basic Info', 'Risk Details', 'Assessment', 'Review & Submit']
+const currentStep = ref(1)
+const step1Error = ref('')
+const step2Error = ref('')
+
+// ── Master data ───────────────────────────────────────────────────────────────
 const loading = ref(false)
 const error = ref('')
-
 const departments = ref([])
 const projects = ref([])
 const regions = ref([])
 const allUnits = ref([])
 const currentUser = ref(null)
 
-// Project searchable dropdown state
+// ── Project dropdown ──────────────────────────────────────────────────────────
 const projectSearch = ref('')
 const projectDropdownOpen = ref(false)
 const selectedProjectName = ref('')
-
-// Create project modal state
 const createProjectModalOpen = ref(false)
 const newProjectName = ref('')
 const newProjectCode = ref('')
 const creatingProject = ref(false)
 const createProjectError = ref('')
 
-// Department searchable dropdown state
+// ── Department dropdown ───────────────────────────────────────────────────────
 const departmentSearch = ref('')
 const departmentDropdownOpen = ref(false)
 const selectedDepartmentName = ref('')
-
-// Create department modal state
 const createDepartmentModalOpen = ref(false)
 const newDepartmentName = ref('')
 const creatingDepartment = ref(false)
 const createDepartmentError = ref('')
 
-// Unit searchable dropdown state
+// ── Unit dropdown ─────────────────────────────────────────────────────────────
 const unitSearch = ref('')
 const unitDropdownOpen = ref(false)
-
-// Create unit modal state
 const createUnitModalOpen = ref(false)
 const newUnitName = ref('')
 const creatingUnit = ref(false)
 const createUnitError = ref('')
 
+// ── Form ──────────────────────────────────────────────────────────────────────
 const form = ref({
   project: '',
   department: '',
@@ -545,40 +615,37 @@ const form = ref({
   remarks: ''
 })
 
+// ── Computed ──────────────────────────────────────────────────────────────────
 const overallRating = computed(() => form.value.likelihood * form.value.impact)
 
 const riskLevel = computed(() => {
-  const rating = overallRating.value
-  if (rating >= 15) return 'Critical'
-  if (rating >= 10) return 'High'
-  if (rating >= 5) return 'Medium'
+  const r = overallRating.value
+  if (r >= 15) return 'Critical'
+  if (r >= 10) return 'High'
+  if (r >= 5) return 'Medium'
   return 'Low'
+})
+
+const filteredProjects = computed(() => {
+  if (!projectSearch.value.trim()) return projects.value
+  const s = projectSearch.value.toLowerCase()
+  return projects.value.filter(p => p.project_name.toLowerCase().includes(s) || p.name.toLowerCase().includes(s))
 })
 
 const filteredDepartments = computed(() => {
   if (!departmentSearch.value.trim()) return departments.value
-  const search = departmentSearch.value.toLowerCase()
-  return departments.value.filter(d =>
-    d.department_name.toLowerCase().includes(search)
-  )
+  const s = departmentSearch.value.toLowerCase()
+  return departments.value.filter(d => d.department_name.toLowerCase().includes(s))
 })
 
 const filteredUnits = computed(() => {
   const deptUnits = allUnits.value.filter(u => u.department === form.value.department)
   if (!unitSearch.value.trim()) return deptUnits
-  const search = unitSearch.value.toLowerCase()
-  return deptUnits.filter(u => u.unit_name.toLowerCase().includes(search))
+  const s = unitSearch.value.toLowerCase()
+  return deptUnits.filter(u => u.unit_name.toLowerCase().includes(s))
 })
 
-const filteredProjects = computed(() => {
-  if (!projectSearch.value.trim()) return projects.value
-  const search = projectSearch.value.toLowerCase()
-  return projects.value.filter(p =>
-    p.project_name.toLowerCase().includes(search) ||
-    p.name.toLowerCase().includes(search)
-  )
-})
-
+// ── Helpers ───────────────────────────────────────────────────────────────────
 const getRatingColor = (rating) => {
   if (rating >= 15) return 'text-red-primary'
   if (rating >= 10) return 'text-orange-600'
@@ -586,83 +653,107 @@ const getRatingColor = (rating) => {
   return 'text-green-600'
 }
 
-const addCause = () => {
-  form.value.possible_causes.push({ cause_description: '' })
+// ── Step navigation ───────────────────────────────────────────────────────────
+const nextStep = () => {
+  if (currentStep.value === 1) {
+    if (!form.value.department) { step1Error.value = 'Department is required.'; return }
+    if (!form.value.risk_category) { step1Error.value = 'Risk Category is required.'; return }
+    step1Error.value = ''
+  }
+  if (currentStep.value === 2) {
+    if (!form.value.risk_description.trim()) { step2Error.value = 'Risk Description is required.'; return }
+    step2Error.value = ''
+  }
+  currentStep.value++
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const removeCause = (index) => {
-  form.value.possible_causes.splice(index, 1)
+const prevStep = () => {
+  currentStep.value--
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const addEffect = () => {
-  form.value.effects.push({ consequence_description: '' })
-}
+// ── Child table helpers ───────────────────────────────────────────────────────
+const addCause = () => form.value.possible_causes.push({ cause_description: '' })
+const removeCause = (i) => form.value.possible_causes.splice(i, 1)
+const addEffect = () => form.value.effects.push({ consequence_description: '' })
+const removeEffect = (i) => form.value.effects.splice(i, 1)
+const addAction = () => form.value.mitigating_actions.push({ action_description: '', responsible_person: '', deadline: '', status: 'Pending' })
+const removeAction = (i) => form.value.mitigating_actions.splice(i, 1)
 
-const removeEffect = (index) => {
-  form.value.effects.splice(index, 1)
-}
-
-const addAction = () => {
-  form.value.mitigating_actions.push({
-    action_description: '',
-    responsible_person: '',
-    deadline: '',
-    status: 'Pending'
-  })
-}
-
-const removeAction = (index) => {
-  form.value.mitigating_actions.splice(index, 1)
-}
-
+// ── Project dropdown ──────────────────────────────────────────────────────────
 const selectProject = (proj) => {
   form.value.project = proj.name
   selectedProjectName.value = proj.project_name
   projectSearch.value = proj.project_name
   projectDropdownOpen.value = false
 }
-
-const closeProjectDropdown = () => {
-  setTimeout(() => {
-    projectDropdownOpen.value = false
-  }, 200)
+const closeProjectDropdown = () => setTimeout(() => { projectDropdownOpen.value = false }, 200)
+const openCreateProjectModal = () => {
+  projectDropdownOpen.value = false
+  createProjectModalOpen.value = true
+  newProjectName.value = ''
+  newProjectCode.value = ''
+  createProjectError.value = ''
+}
+const closeCreateProjectModal = () => {
+  createProjectModalOpen.value = false
+  newProjectName.value = ''
+  newProjectCode.value = ''
+  createProjectError.value = ''
+}
+const handleCreateProject = async () => {
+  if (!newProjectName.value.trim()) { createProjectError.value = 'Project name is required'; return }
+  if (!newProjectCode.value.trim()) { createProjectError.value = 'Project code is required'; return }
+  creatingProject.value = true
+  createProjectError.value = ''
+  try {
+    const res = await axios.post('/api/resource/Project', {
+      doctype: 'Project',
+      project_name: newProjectName.value.trim(),
+      project_code: newProjectCode.value.trim()
+    })
+    if (res.data?.data) {
+      const newProj = { name: res.data.data.name, project_name: res.data.data.project_name }
+      projects.value.push(newProj)
+      selectProject(newProj)
+      closeCreateProjectModal()
+    } else {
+      createProjectError.value = 'Failed to create project.'
+    }
+  } catch (err) {
+    const msg = err.response?.data?.message || err.response?.data?.exc || 'An error occurred.'
+    createProjectError.value = (msg.includes('Duplicate') || msg.includes('already exists'))
+      ? 'A project with this code already exists.'
+      : msg
+  } finally {
+    creatingProject.value = false
+  }
 }
 
-// --- Department dropdown ---
+// ── Department dropdown ───────────────────────────────────────────────────────
 const selectDepartment = (dept) => {
   form.value.department = dept.name
   selectedDepartmentName.value = dept.department_name
   departmentSearch.value = dept.department_name
   departmentDropdownOpen.value = false
-  // Clear unit when department changes
   form.value.unit = ''
   unitSearch.value = ''
 }
-
-const closeDepartmentDropdown = () => {
-  setTimeout(() => {
-    departmentDropdownOpen.value = false
-  }, 200)
-}
-
+const closeDepartmentDropdown = () => setTimeout(() => { departmentDropdownOpen.value = false }, 200)
 const openCreateDepartmentModal = () => {
   departmentDropdownOpen.value = false
   createDepartmentModalOpen.value = true
   newDepartmentName.value = ''
   createDepartmentError.value = ''
 }
-
 const closeCreateDepartmentModal = () => {
   createDepartmentModalOpen.value = false
   newDepartmentName.value = ''
   createDepartmentError.value = ''
 }
-
 const handleCreateDepartment = async () => {
-  if (!newDepartmentName.value.trim()) {
-    createDepartmentError.value = 'Department name is required'
-    return
-  }
+  if (!newDepartmentName.value.trim()) { createDepartmentError.value = 'Department name is required'; return }
   creatingDepartment.value = true
   createDepartmentError.value = ''
   try {
@@ -679,43 +770,32 @@ const handleCreateDepartment = async () => {
       createDepartmentError.value = result.message || 'Failed to create department.'
     }
   } catch (err) {
-    createDepartmentError.value = err.response?.data?.message || 'An error occurred while creating the department.'
+    createDepartmentError.value = err.response?.data?.message || 'An error occurred.'
   } finally {
     creatingDepartment.value = false
   }
 }
 
-// --- Unit dropdown ---
+// ── Unit dropdown ─────────────────────────────────────────────────────────────
 const selectUnit = (unit) => {
   form.value.unit = unit.name
   unitSearch.value = unit.unit_name
   unitDropdownOpen.value = false
 }
-
-const closeUnitDropdown = () => {
-  setTimeout(() => {
-    unitDropdownOpen.value = false
-  }, 200)
-}
-
+const closeUnitDropdown = () => setTimeout(() => { unitDropdownOpen.value = false }, 200)
 const openCreateUnitModal = () => {
   unitDropdownOpen.value = false
   createUnitModalOpen.value = true
   newUnitName.value = ''
   createUnitError.value = ''
 }
-
 const closeCreateUnitModal = () => {
   createUnitModalOpen.value = false
   newUnitName.value = ''
   createUnitError.value = ''
 }
-
 const handleCreateUnit = async () => {
-  if (!newUnitName.value.trim()) {
-    createUnitError.value = 'Unit name is required'
-    return
-  }
+  if (!newUnitName.value.trim()) { createUnitError.value = 'Unit name is required'; return }
   creatingUnit.value = true
   createUnitError.value = ''
   try {
@@ -733,138 +813,32 @@ const handleCreateUnit = async () => {
       createUnitError.value = result.message || 'Failed to create unit.'
     }
   } catch (err) {
-    createUnitError.value = err.response?.data?.message || 'An error occurred while creating the unit.'
+    createUnitError.value = err.response?.data?.message || 'An error occurred.'
   } finally {
     creatingUnit.value = false
   }
 }
 
-const openCreateProjectModal = () => {
-  projectDropdownOpen.value = false
-  createProjectModalOpen.value = true
-  newProjectName.value = ''
-  newProjectCode.value = ''
-  createProjectError.value = ''
-}
-
-const closeCreateProjectModal = () => {
-  createProjectModalOpen.value = false
-  newProjectName.value = ''
-  newProjectCode.value = ''
-  createProjectError.value = ''
-}
-
-const handleCreateProject = async () => {
-  if (!newProjectName.value.trim()) {
-    createProjectError.value = 'Project name is required'
-    return
-  }
-
-  if (!newProjectCode.value.trim()) {
-    createProjectError.value = 'Project code is required'
-    return
-  }
-
-  creatingProject.value = true
-  createProjectError.value = ''
-
-  try {
-    const projectData = {
-      doctype: 'Project',
-      project_name: newProjectName.value.trim(),
-      project_code: newProjectCode.value.trim()
-    }
-
-    const res = await axios.post('/api/resource/Project', projectData)
-
-    if (res.data && res.data.data) {
-      // Add to local projects list
-      const newProj = {
-        name: res.data.data.name,
-        project_name: res.data.data.project_name
-      }
-      projects.value.push(newProj)
-
-      // Select the newly created project
-      selectProject(newProj)
-      closeCreateProjectModal()
-    } else {
-      createProjectError.value = 'Failed to create project. Please try again.'
-    }
-  } catch (err) {
-    const errorMsg = err.response?.data?.message || err.response?.data?.exc || 'An error occurred while creating the project.'
-    // Check for duplicate error
-    if (errorMsg.includes('Duplicate') || errorMsg.includes('already exists')) {
-      createProjectError.value = 'A project with this code already exists. Please use a unique project code.'
-    } else {
-      createProjectError.value = errorMsg
-    }
-    console.error('Error creating project:', err)
-  } finally {
-    creatingProject.value = false
-  }
-}
-
-const loadMasterData = async () => {
-  try {
-    // Fetch current user and auto-populate department
-    const user = await api.getCurrentUser()
-    currentUser.value = user
-
-    // Fetch departments with units
-    const deptRes = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_departments')
-    const depts = deptRes.data.message || []
-    departments.value = depts
-    allUnits.value = depts.flatMap(d => d.units || [])
-
-    if (user && user.department) {
-      const userDept = depts.find(d => d.name === user.department)
-      if (userDept) {
-        form.value.department = userDept.name
-        selectedDepartmentName.value = userDept.department_name
-        departmentSearch.value = userDept.department_name
-      }
-    }
-
-    // Fetch projects
-    const projRes = await axios.get('/api/resource/Project', {
-      params: { fields: JSON.stringify(['name', 'project_name']), limit_page_length: 999 }
-    })
-    projects.value = projRes.data.data || []
-
-    // Fetch regions
-    const regRes = await axios.get('/api/resource/Region', {
-      params: { fields: JSON.stringify(['name', 'region_name']), limit_page_length: 999 }
-    })
-    regions.value = regRes.data.data || []
-
-  } catch (err) {
-    console.error('Failed to load master data', err)
-  }
-}
-
-const handleSubmit = async () => {
+// ── Submit ────────────────────────────────────────────────────────────────────
+/**
+ * @param {boolean} addAnother — if true, reset risk-specific fields and go back
+ *   to step 2 keeping the Basic Info (step 1) intact so the user can quickly
+ *   enter another risk for the same project / department / category.
+ */
+const handleSubmit = async (addAnother) => {
   loading.value = true
   error.value = ''
-
   try {
-    // Format child tables with proper doctype field
     const possibleCauses = form.value.possible_causes
-      .filter(c => c.cause_description && c.cause_description.trim())
-      .map(c => ({
-        doctype: 'Possible Cause',
-        cause_description: c.cause_description.trim()
-      }))
+      .filter(c => c.cause_description?.trim())
+      .map(c => ({ doctype: 'Possible Cause', cause_description: c.cause_description.trim() }))
 
     const effects = form.value.effects
-      .filter(e => e.consequence_description && e.consequence_description.trim())
-      .map(e => ({
-        doctype: 'Risk Consequence',
-        consequence_description: e.consequence_description.trim()
-      }))
+      .filter(e => e.consequence_description?.trim())
+      .map(e => ({ doctype: 'Risk Consequence', consequence_description: e.consequence_description.trim() }))
 
     const mitigatingActions = form.value.mitigating_actions
-      .filter(a => a.action_description && a.action_description.trim())
+      .filter(a => a.action_description?.trim())
       .map(a => ({
         doctype: 'Mitigating Action',
         action_description: a.action_description.trim(),
@@ -882,9 +856,8 @@ const handleSubmit = async () => {
       risk_category: form.value.risk_category,
       risk_owner: form.value.risk_owner || null,
       risk_description: form.value.risk_description,
-      // Child table fields with proper doctype
       possible_causes: possibleCauses,
-      effects: effects,
+      effects,
       mitigating_actions: mitigatingActions,
       likelihood: form.value.likelihood,
       impact: form.value.impact,
@@ -896,21 +869,66 @@ const handleSubmit = async () => {
 
     const res = await axios.post('/api/resource/Program Risk Register', docData)
 
-    if (res.data && res.data.data) {
-      // Success - redirect to the new risk detail page
-      router.push(`/risk/${res.data.data.name}`)
+    if (res.data?.data) {
+      if (addAnother) {
+        // Keep step-1 basic info; reset only steps 2-3 fields
+        form.value.risk_description = ''
+        form.value.possible_causes = []
+        form.value.effects = []
+        form.value.mitigating_actions = []
+        form.value.likelihood = 3
+        form.value.impact = 3
+        form.value.review_frequency = ''
+        form.value.timeline = ''
+        form.value.remarks = ''
+        currentStep.value = 2
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        router.push(`/risk/${res.data.data.name}`)
+      }
     } else {
       error.value = 'Failed to create risk. Please try again.'
     }
   } catch (err) {
     error.value = err.response?.data?.message || err.response?.data?.exc || 'An error occurred while creating the risk.'
-    console.error('Error creating risk:', err)
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  loadMasterData()
-})
+// ── Load master data ──────────────────────────────────────────────────────────
+const loadMasterData = async () => {
+  try {
+    const user = await api.getCurrentUser()
+    currentUser.value = user
+
+    const deptRes = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_departments')
+    const depts = deptRes.data.message || []
+    departments.value = depts
+    allUnits.value = depts.flatMap(d => d.units || [])
+
+    if (user?.department) {
+      const userDept = depts.find(d => d.name === user.department)
+      if (userDept) {
+        form.value.department = userDept.name
+        selectedDepartmentName.value = userDept.department_name
+        departmentSearch.value = userDept.department_name
+      }
+    }
+
+    const projRes = await axios.get('/api/resource/Project', {
+      params: { fields: JSON.stringify(['name', 'project_name']), limit_page_length: 999 }
+    })
+    projects.value = projRes.data.data || []
+
+    const regRes = await axios.get('/api/resource/Region', {
+      params: { fields: JSON.stringify(['name', 'region_name']), limit_page_length: 999 }
+    })
+    regions.value = regRes.data.data || []
+  } catch (err) {
+    console.error('Failed to load master data', err)
+  }
+}
+
+onMounted(() => loadMasterData())
 </script>

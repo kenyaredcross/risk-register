@@ -5,10 +5,11 @@
       <p class="text-medium-gray">Manage departments, users, and roles</p>
     </div>
 
-    <!-- Admin Navigation Tabs -->
+    <!-- Admin Navigation Tabs — only show full admin tabs for System Manager -->
     <div class="mb-6 border-b border-light-border">
       <nav class="flex space-x-6">
         <router-link
+          v-if="isSystemManager"
           to="/admin/departments"
           class="pb-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="$route.path === '/admin/departments' ? 'border-red-primary text-red-primary' : 'border-transparent text-medium-gray hover:text-charcoal hover:border-light-border'"
@@ -23,6 +24,7 @@
           Users
         </router-link>
         <router-link
+          v-if="isSystemManager"
           to="/admin/roles"
           class="pb-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="$route.path === '/admin/roles' ? 'border-red-primary text-red-primary' : 'border-transparent text-medium-gray hover:text-charcoal hover:border-light-border'"
@@ -37,7 +39,7 @@
         <h2 class="text-xl font-bold text-charcoal mb-1">User Management</h2>
         <p class="text-sm text-medium-gray">Manage users and their KRCS roles</p>
       </div>
-      <button @click="showCreateModal = true" class="btn btn-primary">
+      <button @click="openCreateModal" class="btn btn-primary">
         <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
@@ -132,8 +134,11 @@
             <input v-model="createForm.lastName" type="text" class="input w-full" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-charcoal mb-1">Department</label>
-            <select v-model="createForm.department" class="input w-full">
+            <label class="block text-sm font-medium text-charcoal mb-1">
+              Department
+              <span v-if="departmentLocked" class="ml-1 text-xs text-medium-gray font-normal">(your department)</span>
+            </label>
+            <select v-model="createForm.department" class="input w-full" :disabled="departmentLocked">
               <option value="">Select Department</option>
               <option v-for="dept in departments" :key="dept.name" :value="dept.name">
                 {{ dept.department_name }}
@@ -174,8 +179,11 @@
 
         <div class="space-y-4 mb-4">
           <div>
-            <label class="block text-sm font-medium text-charcoal mb-1">Department</label>
-            <select v-model="editForm.department" class="input w-full">
+            <label class="block text-sm font-medium text-charcoal mb-1">
+              Department
+              <span v-if="departmentLocked" class="ml-1 text-xs text-medium-gray font-normal">(your department)</span>
+            </label>
+            <select v-model="editForm.department" class="input w-full" :disabled="departmentLocked">
               <option value="">Select Department</option>
               <option v-for="dept in departments" :key="dept.name" :value="dept.name">
                 {{ dept.department_name }}
@@ -207,7 +215,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../../composables/useApi'
 
 const api = useApi()
@@ -218,6 +226,15 @@ const departments = ref([])
 const loading = ref(false)
 const actionLoading = ref(false)
 const error = ref('')
+
+// Caller's permission context (set from getAdminMeta)
+const isSystemManager = ref(false)
+const isHOD = ref(false)
+const isPM = ref(false)
+const userDepartment = ref('')  // caller's own department (non-empty for HOD/PM)
+
+// When HOD or PM is logged in, the department field is locked to their own dept
+const departmentLocked = computed(() => !isSystemManager.value && !!userDepartment.value)
 
 const showCreateModal = ref(false)
 const createForm = ref({ email: '', firstName: '', lastName: '', department: '', roles: [] })
@@ -236,12 +253,22 @@ const loadMeta = async () => {
   const meta = await api.getAdminMeta()
   krcsRoles.value = meta.krcs_roles || []
   departments.value = meta.departments || []
+  isSystemManager.value = !!meta.is_system_manager
+  isHOD.value = !!meta.is_hod
+  isPM.value = !!meta.is_pm
+  userDepartment.value = meta.user_department || ''
 }
 
 const closeCreateModal = () => {
   showCreateModal.value = false
-  createForm.value = { email: '', firstName: '', lastName: '', department: '', roles: [] }
+  createForm.value = { email: '', firstName: '', lastName: '', department: departmentLocked.value ? userDepartment.value : '', roles: [] }
   error.value = ''
+}
+
+const openCreateModal = () => {
+  createForm.value = { email: '', firstName: '', lastName: '', department: departmentLocked.value ? userDepartment.value : '', roles: [] }
+  error.value = ''
+  showCreateModal.value = true
 }
 
 const handleCreateUser = async () => {

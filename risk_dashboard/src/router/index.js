@@ -37,13 +37,13 @@ const routes = [
     path: '/admin/departments',
     name: 'AdminDepartments',
     component: () => import('../views/admin/Departments.vue'),
-    meta: { requiresSystemManager: true }
+    meta: { requiresDepartmentManager: true }
   },
   {
     path: '/admin/users',
     name: 'AdminUsers',
     component: () => import('../views/admin/Users.vue'),
-    meta: { requiresSystemManager: true }
+    meta: { requiresUserManager: true }
   },
   {
     path: '/admin/roles',
@@ -73,8 +73,18 @@ router.beforeEach(async (to) => {
     return { name: 'Login', query: { redirect: to.fullPath } }
   }
 
-  // Check System Manager requirement for admin routes
+  // Check System Manager requirement for admin routes (roles reference)
   if (to.meta.requiresSystemManager && !authStore.isSystemManager) {
+    return { name: 'Dashboard' }
+  }
+
+  // Check department manager requirement (System Manager or KRCS HOD can manage units)
+  if (to.meta.requiresDepartmentManager && !authStore.isSystemManager && !authStore.isHOD) {
+    return { name: 'Dashboard' }
+  }
+
+  // Check user-manager requirement (System Manager, KRCS HOD, or KRCS PM)
+  if (to.meta.requiresUserManager && !authStore.canManageUsers) {
     return { name: 'Dashboard' }
   }
 

@@ -278,6 +278,11 @@
                   {{ store.selectedRisk.status || 'Draft' }}
                 </span>
               </div>
+              <!-- Show which role is expected to approve -->
+              <div v-if="awaitingApproverRole && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')">
+                <div class="text-xs text-medium-gray mb-1">Awaiting Approval From</div>
+                <div class="text-sm font-medium text-orange-700">{{ awaitingApproverRole }}</div>
+              </div>
               <div v-if="store.selectedRisk.approved_by">
                 <div class="text-xs text-medium-gray mb-1">{{ store.selectedRisk.status === 'Rejected' ? 'Rejected By' : 'Approved By' }}</div>
                 <div class="text-charcoal font-medium text-sm">{{ store.selectedRisk.approved_by }}</div>
@@ -313,7 +318,15 @@
                   {{ actionLoading ? 'Requesting...' : 'Request Closure' }}
                 </button>
 
-                <!-- Approve (Approver only) -->
+                <!-- Self-approval notice: creator cannot approve their own risk -->
+                <div
+                  v-if="isOwnRisk && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')"
+                  class="text-xs text-medium-gray bg-light-gray rounded-lg px-3 py-2 text-center"
+                >
+                  Awaiting approval from <span class="font-semibold text-charcoal">{{ awaitingApproverRole }}</span>
+                </div>
+
+                <!-- Approve (Approver only, not the creator) -->
                 <button
                   v-if="isApprover && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')"
                   @click="handleApprove"
@@ -323,7 +336,7 @@
                   {{ actionLoading ? 'Approving...' : 'Approve' }}
                 </button>
 
-                <!-- Reject (Approver only) -->
+                <!-- Reject (Approver only, not the creator) -->
                 <button
                   v-if="isApprover && (store.selectedRisk.status === 'Pending Approval' || store.selectedRisk.status === 'Pending Close Approval')"
                   @click="showRejectModal = true"
@@ -415,6 +428,8 @@ const currentReviewIndex = ref(null)
 
 // Approval state
 const isApprover = ref(false)
+const isOwnRisk = ref(false)
+const awaitingApproverRole = ref('')
 const actionLoading = ref(false)
 const actionError = ref('')
 const showRejectModal = ref(false)
@@ -561,8 +576,10 @@ const handleReject = async () => {
 onMounted(async () => {
   const riskId = route.params.id
   await store.loadRisk(riskId)
-  // Check per-risk approval eligibility (scoped: HOD=dept, PM=project, HOR/DSG=global)
+  // Check per-risk approval eligibility and get required approver role for display
   const approvalInfo = await api.canApproveRisk(riskId)
   isApprover.value = approvalInfo.can_approve
+  isOwnRisk.value = approvalInfo.is_own_risk || false
+  awaitingApproverRole.value = approvalInfo.awaiting_approver_role || ''
 })
 </script>

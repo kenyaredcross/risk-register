@@ -34,6 +34,7 @@
               >
                 Risk Register
               </router-link>
+              <!-- System Manager → full Admin (starts at Departments) -->
               <router-link
                 v-if="authStore.isSystemManager"
                 to="/admin/departments"
@@ -41,6 +42,24 @@
                 :class="{ 'nav-link-active': $route.path.startsWith('/admin') }"
               >
                 Admin
+              </router-link>
+              <!-- HOD → Admin (Departments & Units for their dept) -->
+              <router-link
+                v-else-if="authStore.isHOD"
+                to="/admin/departments"
+                class="nav-link"
+                :class="{ 'nav-link-active': $route.path.startsWith('/admin') }"
+              >
+                Admin
+              </router-link>
+              <!-- PM only → Users page -->
+              <router-link
+                v-else-if="authStore.isPM"
+                to="/admin/users"
+                class="nav-link"
+                :class="{ 'nav-link-active': $route.path === '/admin/users' }"
+              >
+                Users
               </router-link>
             </nav>
 
@@ -98,8 +117,11 @@
           <router-link to="/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Risk Register
           </router-link>
-          <router-link v-if="authStore.isSystemManager" to="/admin/departments" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+          <router-link v-if="authStore.isSystemManager || authStore.isHOD" to="/admin/departments" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Admin
+          </router-link>
+          <router-link v-else-if="authStore.isPM" to="/admin/users" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+            Users
           </router-link>
           <router-link
             to="/risk/create"

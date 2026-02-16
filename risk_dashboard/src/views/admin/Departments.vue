@@ -23,6 +23,7 @@
           Users
         </router-link>
         <router-link
+          v-if="!isHOD"
           to="/admin/roles"
           class="pb-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="$route.path === '/admin/roles' ? 'border-red-primary text-red-primary' : 'border-transparent text-medium-gray hover:text-charcoal hover:border-light-border'"
@@ -32,8 +33,8 @@
       </nav>
     </div>
 
-    <!-- Add Department Form -->
-    <div class="card mb-6">
+    <!-- Add Department Form — System Manager only -->
+    <div v-if="!isHOD" class="card mb-6">
       <h2 class="card-header">Add New Department</h2>
       <div class="flex gap-3">
         <input
@@ -50,6 +51,11 @@
       <div v-if="error" class="text-sm text-red-600 mt-2">{{ error }}</div>
     </div>
 
+    <!-- HOD notice -->
+    <div v-if="isHOD" class="mb-4">
+      <div v-if="error" class="text-sm text-red-600 mb-2">{{ error }}</div>
+    </div>
+
     <!-- Departments List -->
     <div v-if="loadingList" class="flex items-center justify-center py-20">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-primary"></div>
@@ -60,6 +66,7 @@
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-bold text-charcoal">{{ dept.department_name }}</h3>
           <button
+            v-if="!isHOD"
             @click="confirmDeleteDepartment(dept)"
             class="text-sm text-red-primary hover:text-red-dark font-medium"
             title="Delete Department"
@@ -113,10 +120,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../../composables/useApi'
+import { useAuthStore } from '../../stores/authStore'
 
 const api = useApi()
+const authStore = useAuthStore()
+
+// HOD can manage units in their own dept only — cannot add/delete departments
+const isHOD = computed(() => authStore.isHOD && !authStore.isSystemManager)
 
 const departments = ref([])
 const newDeptName = ref('')
@@ -127,7 +139,15 @@ const error = ref('')
 
 const loadDepartments = async () => {
   loadingList.value = true
-  departments.value = await api.getDepartments()
+  const allDepts = await api.getDepartments()
+  // HOD only sees their own department
+  if (isHOD.value) {
+    const meta = await api.getAdminMeta()
+    const ownDept = meta.user_department
+    departments.value = ownDept ? allDepts.filter(d => d.name === ownDept) : []
+  } else {
+    departments.value = allDepts
+  }
   loadingList.value = false
 }
 

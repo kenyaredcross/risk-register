@@ -103,6 +103,51 @@
   }
 }
 
+/* Range slider — red accent */
+input[type="range"].slider-red {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #fee2e2;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"].slider-red::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #DC2626;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.4);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+input[type="range"].slider-red::-webkit-slider-thumb:hover {
+  background: #B91C1C;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.5);
+}
+
+input[type="range"].slider-red::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: #DC2626;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.4);
+  transition: background 0.15s;
+}
+
+input[type="range"].slider-red::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #fee2e2;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

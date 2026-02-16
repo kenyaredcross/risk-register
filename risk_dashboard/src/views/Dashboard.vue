@@ -11,8 +11,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Department Filter -->
         <div>
-          <label class="block text-sm font-medium text-charcoal mb-2">Filter by Department</label>
-          <select v-model="filterDepartment" class="input">
+          <label class="block text-sm font-medium text-charcoal mb-2">
+            Filter by Department
+            <span v-if="departmentLocked" class="ml-1 text-xs text-medium-gray font-normal">(your department)</span>
+          </label>
+          <select v-model="filterDepartment" class="input" :disabled="departmentLocked">
             <option value="">All Departments</option>
             <option v-for="dept in departments" :key="dept.name" :value="dept.name">
               {{ dept.department_name }}
@@ -314,6 +317,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRiskStore } from '../stores/riskStore'
+import { useApi } from '../composables/useApi'
 import StatsCard from '../components/StatsCard.vue'
 import RiskMatrix from '../components/RiskMatrix.vue'
 import RiskCard from '../components/RiskCard.vue'
@@ -321,6 +325,7 @@ import axios from 'axios'
 
 const store = useRiskStore()
 const router = useRouter()
+const api = useApi()
 const selectedCell = ref(null)
 const viewMode = ref('card') // 'card' or 'table'
 
@@ -328,9 +333,15 @@ const filterDepartment = ref('')
 const filterUnit = ref('')
 const departments = ref([])
 const allUnits = ref([])
+const departmentLocked = ref(false) // true when dept is auto-set and user can't change it
+
+// Roles that can see all departments (no auto-filter)
+const GLOBAL_VIEW_ROLES = new Set(['System Manager', 'KRCS HOR', 'KRCS DSG'])
 
 const hasActiveFilters = computed(() => {
-  return filterDepartment.value || filterUnit.value
+  // Show the active-filters bar only if there's a non-locked dept filter or any unit filter
+  const deptActive = filterDepartment.value && !departmentLocked.value
+  return deptActive || filterUnit.value
 })
 
 const filteredUnits = computed(() => {
@@ -391,7 +402,8 @@ const viewRisk = (risk) => {
 }
 
 const clearFilters = () => {
-  filterDepartment.value = ''
+  // Never clear the department if it's locked (auto-set from user profile)
+  if (!departmentLocked.value) filterDepartment.value = ''
   filterUnit.value = ''
 }
 
@@ -416,9 +428,22 @@ const loadDepartmentsAndUnits = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // Load departments first so auto-filter can match
+  await loadDepartmentsAndUnits()
+
+  // Fetch current user and apply department filter if not a global viewer
+  try {
+    const user = await api.getCurrentUser()
+    if (!user.is_global_viewer && user.department) {
+      filterDepartment.value = user.department
+      departmentLocked.value = true
+    }
+  } catch (err) {
+    console.error('Failed to load current user for dashboard filter', err)
+  }
+
   store.loadRisks()
-  loadDepartmentsAndUnits()
 })
 </script>
 

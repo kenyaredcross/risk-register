@@ -10,6 +10,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => !!user.value && user.value !== 'Guest')
   const isSystemManager = computed(() => roles.value.includes('System Manager'))
+  const isHOD = computed(() => roles.value.includes('KRCS HOD'))
+  const isPM = computed(() => roles.value.includes('KRCS Project Manager'))
+  // HOD and PM can access the Users admin page to manage users in their department
+  const canManageUsers = computed(() => isSystemManager.value || isHOD.value || isPM.value)
 
   /**
    * Login via Frappe's login endpoint.
@@ -44,20 +48,25 @@ export const useAuthStore = defineStore('auth', () => {
 
   /**
    * Fetch the currently logged-in user from Frappe.
+   * Uses our own get_current_user API so that roles are always readable
+   * regardless of the user's permission level (Frappe's resource API blocks
+   * reading the roles child table for non-System Manager users).
    */
   const fetchCurrentUser = async () => {
     try {
+      // First confirm we have a logged-in session
       const res = await axios.get('/api/method/frappe.auth.get_logged_user')
       user.value = res.data.message || null
-      // Also grab full name and roles
+
       if (user.value && user.value !== 'Guest') {
-        const userRes = await axios.get(`/api/resource/User/${user.value}`, {
-          params: { fields: JSON.stringify(['full_name', 'roles']) }
-        })
-        fullName.value = userRes.data.data?.full_name || user.value
-        // Extract role names from roles child table
-        const userRoles = userRes.data.data?.roles || []
-        roles.value = userRoles.map(r => r.role)
+        // Our endpoint returns all_roles (full role list), full_name, etc.
+        const meRes = await axios.get(
+          '/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_current_user'
+        )
+        const me = meRes.data.message || {}
+        fullName.value = me.full_name || user.value
+        // all_roles contains every role the user has (including System Manager)
+        roles.value = me.all_roles || []
       }
     } catch {
       user.value = null
@@ -104,5 +113,5 @@ export const useAuthStore = defineStore('auth', () => {
     await fetchCurrentUser()
   }
 
-  return { user, fullName, roles, isLoggedIn, isSystemManager, login, logout, checkSession }
+  return { user, fullName, roles, isLoggedIn, isSystemManager, isHOD, isPM, canManageUsers, login, logout, checkSession }
 })
