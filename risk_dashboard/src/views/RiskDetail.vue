@@ -88,11 +88,23 @@
             </ul>
           </div>
 
-          <!-- Mitigating Actions -->
+          <!-- Actions -->
           <div v-if="store.selectedRisk.mitigating_actions && store.selectedRisk.mitigating_actions.length > 0" class="card">
-            <h2 class="card-header">Mitigating Actions</h2>
+            <h2 class="card-header">Actions</h2>
             <div class="space-y-3">
               <div v-for="(action, index) in store.selectedRisk.mitigating_actions" :key="index" class="p-4 bg-light-gray rounded-lg">
+                <!-- Addresses Cause badge -->
+                <div v-if="action.addresses_cause" class="mb-2">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    Addresses Cause {{ action.addresses_cause }}
+                    <span v-if="store.selectedRisk.possible_causes && store.selectedRisk.possible_causes[action.addresses_cause - 1]" class="font-normal opacity-75">
+                      — {{ store.selectedRisk.possible_causes[action.addresses_cause - 1].cause_description?.substring(0, 60) }}{{ store.selectedRisk.possible_causes[action.addresses_cause - 1].cause_description?.length > 60 ? '…' : '' }}
+                    </span>
+                  </span>
+                </div>
                 <div class="font-semibold text-charcoal mb-2">{{ action.action_description }}</div>
                 <div class="grid grid-cols-3 gap-4 text-sm">
                   <div>
@@ -204,6 +216,10 @@
               <div>
                 <div class="text-xs text-medium-gray mb-1">Risk Category</div>
                 <div class="text-charcoal font-medium">{{ store.selectedRisk.risk_category || 'N/A' }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-medium-gray mb-1">Risk Type</div>
+                <div class="text-charcoal font-medium">{{ store.selectedRisk.risk_type || 'N/A' }}</div>
               </div>
               <div>
                 <div class="text-xs text-medium-gray mb-1">Risk Owner</div>

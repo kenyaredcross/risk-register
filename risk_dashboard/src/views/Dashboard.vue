@@ -369,7 +369,7 @@ const cardFilterLabel = computed(() => {
 })
 
 // Roles that can see all departments (no auto-filter)
-const GLOBAL_VIEW_ROLES = new Set(['System Manager', 'KRCS HOR', 'KRCS DSG'])
+const GLOBAL_VIEW_ROLES = new Set(['System Manager', 'KRCS HOR', 'KRCS DSG', 'KRCS Audit'])
 
 const hasActiveFilters = computed(() => {
   // Show the active-filters bar only if there's a non-locked dept filter or any unit filter

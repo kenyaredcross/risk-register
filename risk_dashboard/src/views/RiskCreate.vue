@@ -43,8 +43,19 @@
         <h2 class="card-header">Basic Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <!-- Project -->
-          <div class="relative">
+          <!-- Risk Type — first field, drives visibility of other fields -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-charcoal mb-1">Risk Type *</label>
+            <select v-model="form.risk_type" class="input w-full md:w-1/2">
+              <option value="">Select Risk Type</option>
+              <option v-if="isGlobalViewer" value="Corporate">Corporate</option>
+              <option value="Departmental">Departmental</option>
+              <option value="Project">Project</option>
+            </select>
+          </div>
+
+          <!-- Project (only shown when Risk Type = Project) -->
+          <div v-if="form.risk_type === 'Project'" class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Project</label>
             <input
               v-model="projectSearch"
@@ -68,8 +79,8 @@
             </div>
           </div>
 
-          <!-- Department -->
-          <div class="relative">
+          <!-- Department (hidden for Corporate risks) -->
+          <div v-if="form.risk_type !== 'Corporate'" class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Department *</label>
             <input type="hidden" :value="form.department" />
             <input
@@ -94,8 +105,8 @@
             </div>
           </div>
 
-          <!-- Unit -->
-          <div class="relative">
+          <!-- Unit (hidden for Corporate risks) -->
+          <div v-if="form.risk_type !== 'Corporate'" class="relative">
             <label class="block text-sm font-medium text-charcoal mb-1">Unit</label>
             <input
               v-model="unitSearch"
@@ -232,17 +243,17 @@
         </div>
       </div>
 
-      <!-- Mitigating Actions -->
+      <!-- Actions -->
       <div class="card">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-bold text-charcoal">Mitigating Actions</h2>
+          <h2 class="text-lg font-bold text-charcoal">Actions</h2>
           <button type="button" @click="addAction" class="btn btn-outline btn-sm">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
             Add Action
           </button>
         </div>
         <div v-if="form.mitigating_actions.length === 0" class="text-sm text-medium-gray text-center py-4">
-          No mitigating actions added yet. Click "Add Action" to add one.
+          No actions added yet. Click "Add Action" to add one.
         </div>
         <div v-else class="space-y-4">
           <div v-for="(action, index) in form.mitigating_actions" :key="index" class="border border-light-border rounded-lg p-4 relative">
@@ -250,9 +261,23 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Addresses Cause (shown only when there are causes) -->
+              <div v-if="form.possible_causes.filter(c => c.cause_description).length > 0" class="md:col-span-2">
+                <label class="block text-sm font-medium text-charcoal mb-1">Addresses Cause</label>
+                <select v-model="action.addresses_cause" class="input w-full">
+                  <option :value="null">— Not linked to a specific cause —</option>
+                  <option
+                    v-for="(cause, ci) in form.possible_causes.filter(c => c.cause_description)"
+                    :key="ci"
+                    :value="ci + 1"
+                  >
+                    Cause {{ ci + 1 }}: {{ cause.cause_description.length > 80 ? cause.cause_description.substring(0, 80) + '…' : cause.cause_description }}
+                  </option>
+                </select>
+              </div>
               <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-charcoal mb-1">Action Description *</label>
-                <textarea v-model="action.action_description" rows="2" class="input w-full" placeholder="Describe the mitigating action..."></textarea>
+                <textarea v-model="action.action_description" rows="2" class="input w-full" placeholder="Describe the action..."></textarea>
               </div>
               <div>
                 <label class="block text-sm font-medium text-charcoal mb-1">Responsible Person</label>
@@ -378,9 +403,10 @@
             <button type="button" @click="currentStep = 1" class="text-xs text-red-primary hover:underline">Edit</button>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div><div class="text-xs text-medium-gray">Project</div><div class="font-medium text-charcoal">{{ projectSearch || '—' }}</div></div>
-            <div><div class="text-xs text-medium-gray">Department</div><div class="font-medium text-charcoal">{{ departmentSearch || '—' }}</div></div>
-            <div><div class="text-xs text-medium-gray">Unit</div><div class="font-medium text-charcoal">{{ unitSearch || '—' }}</div></div>
+            <div><div class="text-xs text-medium-gray">Risk Type</div><div class="font-medium text-charcoal">{{ form.risk_type || '—' }}</div></div>
+            <div v-if="form.risk_type === 'Project'"><div class="text-xs text-medium-gray">Project</div><div class="font-medium text-charcoal">{{ projectSearch || '—' }}</div></div>
+            <div v-if="form.risk_type !== 'Corporate'"><div class="text-xs text-medium-gray">Department</div><div class="font-medium text-charcoal">{{ departmentSearch || '—' }}</div></div>
+            <div v-if="form.risk_type !== 'Corporate'"><div class="text-xs text-medium-gray">Unit</div><div class="font-medium text-charcoal">{{ unitSearch || '—' }}</div></div>
             <div><div class="text-xs text-medium-gray">Region</div><div class="font-medium text-charcoal">{{ form.region || '—' }}</div></div>
             <div><div class="text-xs text-medium-gray">Category</div><div class="font-medium text-charcoal">{{ form.risk_category || '—' }}</div></div>
             <div><div class="text-xs text-medium-gray">Risk Owner</div><div class="font-medium text-charcoal">{{ form.risk_owner || '—' }}</div></div>
@@ -552,7 +578,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useApi } from '../composables/useApi'
@@ -610,6 +636,7 @@ const form = ref({
   unit: '',
   region: '',
   risk_category: '',
+  risk_type: '',
   risk_owner: '',
   risk_description: '',
   possible_causes: [],
@@ -623,6 +650,7 @@ const form = ref({
 })
 
 // ── Computed ──────────────────────────────────────────────────────────────────
+const isGlobalViewer = computed(() => currentUser.value?.is_global_viewer === true)
 const overallRating = computed(() => form.value.likelihood * form.value.impact)
 
 const riskLevel = computed(() => {
@@ -663,7 +691,8 @@ const getRatingColor = (rating) => {
 // ── Step navigation ───────────────────────────────────────────────────────────
 const nextStep = () => {
   if (currentStep.value === 1) {
-    if (!form.value.department) { step1Error.value = 'Department is required.'; return }
+    if (!form.value.risk_type) { step1Error.value = 'Risk Type is required.'; return }
+    if (form.value.risk_type !== 'Corporate' && !form.value.department) { step1Error.value = 'Department is required.'; return }
     if (!form.value.risk_category) { step1Error.value = 'Risk Category is required.'; return }
     step1Error.value = ''
   }
@@ -685,8 +714,22 @@ const addCause = () => form.value.possible_causes.push({ cause_description: '' }
 const removeCause = (i) => form.value.possible_causes.splice(i, 1)
 const addEffect = () => form.value.effects.push({ consequence_description: '' })
 const removeEffect = (i) => form.value.effects.splice(i, 1)
-const addAction = () => form.value.mitigating_actions.push({ action_description: '', responsible_person: '', deadline: '', status: 'Pending' })
+const addAction = () => form.value.mitigating_actions.push({ action_description: '', responsible_person: '', deadline: '', status: 'Pending', addresses_cause: null })
 const removeAction = (i) => form.value.mitigating_actions.splice(i, 1)
+
+// Clear fields based on risk_type changes
+watch(() => form.value.risk_type, (newType) => {
+  if (newType !== 'Project') {
+    form.value.project = ''
+    projectSearch.value = ''
+  }
+  if (newType === 'Corporate') {
+    form.value.department = ''
+    form.value.unit = ''
+    departmentSearch.value = ''
+    unitSearch.value = ''
+  }
+})
 
 // ── Project dropdown ──────────────────────────────────────────────────────────
 const selectProject = (proj) => {
@@ -851,7 +894,8 @@ const handleSubmit = async (addAnother, forApproval = false) => {
         action_description: a.action_description.trim(),
         responsible_person: a.responsible_person || null,
         deadline: a.deadline || null,
-        status: 'Pending'
+        status: 'Pending',
+        addresses_cause: a.addresses_cause || null
       }))
 
     const docData = {
@@ -861,6 +905,7 @@ const handleSubmit = async (addAnother, forApproval = false) => {
       unit: form.value.unit || null,
       region: form.value.region || null,
       risk_category: form.value.risk_category,
+      risk_type: form.value.risk_type || null,
       risk_owner: form.value.risk_owner || null,
       risk_description: form.value.risk_description,
       possible_causes: possibleCauses,

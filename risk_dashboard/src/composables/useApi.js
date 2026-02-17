@@ -21,6 +21,7 @@ export function useApi() {
             'name',
             'project',
             'risk_category',
+            'risk_type',
             'risk_description',
             'likelihood',
             'impact',

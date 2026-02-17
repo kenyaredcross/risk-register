@@ -10,7 +10,7 @@ from frappe.utils import nowdate
 # ---------------------------------------------------------------------------
 
 # Global approvers: can approve any risk regardless of department/project
-GLOBAL_APPROVER_ROLES = {"KRCS HOR", "KRCS DSG", "System Manager"}
+GLOBAL_APPROVER_ROLES = {"KRCS HOR", "KRCS DSG", "System Manager", "KRCS Audit"}
 
 # Department-scoped approvers: can only approve risks in their own department
 DEPT_APPROVER_ROLES = {"KRCS HOD"}
@@ -451,7 +451,7 @@ def get_category_matrix(view_by="department", filter_department=None, filter_sta
     LEVEL_ORDER = {"Critical": 4, "High": 3, "Medium": 2, "Low": 1}
 
     roles = _get_user_roles()
-    GLOBAL_VIEW_ROLES = {"System Manager", "KRCS HOR", "KRCS DSG"}
+    GLOBAL_VIEW_ROLES = {"System Manager", "KRCS HOR", "KRCS DSG", "KRCS Audit"}
     is_global = bool(roles & GLOBAL_VIEW_ROLES)
     user_dept = None if is_global else _get_current_user_department()
 
@@ -659,6 +659,7 @@ KRCS_ROLES = [
     "KRCS Procurement Manager",
     "KRCS Logistics Manager",
     "KRCS HR Manager",
+    "KRCS Audit",
 ]
 
 
@@ -683,7 +684,7 @@ def get_current_user():
     )
 
     # Roles that can see all departments (no auto-filter on dashboard)
-    GLOBAL_VIEW_ROLES = {"System Manager", "KRCS HOR", "KRCS DSG"}
+    GLOBAL_VIEW_ROLES = {"System Manager", "KRCS HOR", "KRCS DSG", "KRCS Audit"}
     all_roles = set(frappe.get_roles(user))
     is_global_viewer = bool(all_roles & GLOBAL_VIEW_ROLES)
     is_system_manager = "System Manager" in all_roles

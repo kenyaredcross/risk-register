@@ -84,6 +84,19 @@
         </div>
       </div>
 
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <!-- Risk Type Filter -->
+        <div>
+          <label class="block text-sm font-medium text-charcoal mb-2">Risk Type</label>
+          <select v-model="filterRiskType" class="input">
+            <option value="">All Types</option>
+            <option value="Corporate">Corporate</option>
+            <option value="Departmental">Departmental</option>
+            <option value="Project">Project</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Active Filters -->
       <div v-if="hasActiveFilters" class="mt-4 pt-4 border-t border-light-border flex items-center justify-between">
         <div class="flex items-center flex-wrap gap-2">
@@ -93,6 +106,7 @@
           <span v-if="filterLevel" class="badge badge-medium">{{ filterLevel }}</span>
           <span v-if="filterStatus" class="badge badge-medium">{{ filterStatus }}</span>
           <span v-if="filterReviewStatus" class="badge badge-medium">{{ filterReviewStatus }}</span>
+          <span v-if="filterRiskType" class="badge badge-medium">{{ filterRiskType }}</span>
         </div>
         <button @click="clearFilters" class="text-sm text-red-primary hover:text-red-hover font-medium">
           Clear All
@@ -282,6 +296,7 @@ const filterStatus = ref('')
 const filterReviewStatus = ref('')
 const filterDepartment = ref('')
 const filterUnit = ref('')
+const filterRiskType = ref('')
 const sortBy = ref('rating-desc')
 const viewMode = ref('card') // 'card' or 'table'
 
@@ -290,7 +305,7 @@ const allUnits = ref([])
 
 const hasActiveFilters = computed(() => {
   const deptActive = departmentLocked.value ? false : !!filterDepartment.value
-  return searchQuery.value || filterLevel.value || filterStatus.value || filterReviewStatus.value || deptActive || filterUnit.value
+  return searchQuery.value || filterLevel.value || filterStatus.value || filterReviewStatus.value || deptActive || filterUnit.value || filterRiskType.value
 })
 
 const filteredUnits = computed(() => {
@@ -337,6 +352,11 @@ const filteredRisks = computed(() => {
     risks = risks.filter(risk => (risk.review_status || 'Not Scheduled') === filterReviewStatus.value)
   }
 
+  // Risk type filter
+  if (filterRiskType.value) {
+    risks = risks.filter(risk => risk.risk_type === filterRiskType.value)
+  }
+
   // Sort
   risks.sort((a, b) => {
     switch (sortBy.value) {
@@ -365,6 +385,7 @@ const clearFilters = () => {
   filterReviewStatus.value = ''
   if (!departmentLocked.value) filterDepartment.value = ''
   filterUnit.value = ''
+  filterRiskType.value = ''
 }
 
 const getDepartmentName = (deptId) => {

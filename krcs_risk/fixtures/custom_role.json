@@ -61,5 +61,12 @@
     "role_name": "KRCS HR Manager",
     "desk_access": 1,
     "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "KRCS Audit",
+    "role_name": "KRCS Audit",
+    "desk_access": 1,
+    "is_custom": 1
   }
 ]
