@@ -133,13 +133,13 @@
               </button>
             </div>
 
-            <div v-if="store.selectedRisk.risk_reviews && store.selectedRisk.risk_reviews.length > 0" class="relative">
+            <div v-if="sortedReviews.length > 0" class="relative">
               <!-- Timeline line -->
               <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-light-gray"></div>
 
               <!-- Timeline items -->
               <div class="space-y-8">
-                <div v-for="(review, index) in store.selectedRisk.risk_reviews" :key="index" class="relative pl-12">
+                <div v-for="(review, index) in sortedReviews" :key="index" class="relative pl-12">
                   <!-- Timeline dot -->
                   <div class="absolute left-2.5 top-1 w-3 h-3 rounded-full bg-red-primary ring-4 ring-white"></div>
 
@@ -411,7 +411,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRiskStore } from '../stores/riskStore'
 import { useApi } from '../composables/useApi'
@@ -421,6 +421,12 @@ const route = useRoute()
 const router = useRouter()
 const store = useRiskStore()
 const api = useApi()
+
+// Reviews sorted newest first
+const sortedReviews = computed(() => {
+  const reviews = store.selectedRisk?.risk_reviews || []
+  return [...reviews].sort((a, b) => new Date(b.review_date) - new Date(a.review_date))
+})
 
 const showReviewForm = ref(false)
 const currentReview = ref(null)

@@ -22,8 +22,11 @@
 
         <!-- Department Filter -->
         <div>
-          <label class="block text-sm font-medium text-charcoal mb-2">Department</label>
-          <select v-model="filterDepartment" class="input">
+          <label class="block text-sm font-medium text-charcoal mb-2">
+            Department
+            <span v-if="departmentLocked" class="text-xs text-medium-gray font-normal ml-1">(your department)</span>
+          </label>
+          <select v-model="filterDepartment" class="input" :disabled="departmentLocked">
             <option value="">All Departments</option>
             <option v-for="dept in departments" :key="dept.name" :value="dept.name">
               {{ dept.department_name }}
@@ -265,9 +268,13 @@ import { useRouter } from 'vue-router'
 import { useRiskStore } from '../stores/riskStore'
 import RiskCard from '../components/RiskCard.vue'
 import axios from 'axios'
+import { useApi } from '../composables/useApi'
 
 const store = useRiskStore()
 const router = useRouter()
+const api = useApi()
+
+const departmentLocked = ref(false)
 
 const searchQuery = ref('')
 const filterLevel = ref('')
@@ -282,7 +289,8 @@ const departments = ref([])
 const allUnits = ref([])
 
 const hasActiveFilters = computed(() => {
-  return searchQuery.value || filterLevel.value || filterStatus.value || filterReviewStatus.value || filterDepartment.value || filterUnit.value
+  const deptActive = departmentLocked.value ? false : !!filterDepartment.value
+  return searchQuery.value || filterLevel.value || filterStatus.value || filterReviewStatus.value || deptActive || filterUnit.value
 })
 
 const filteredUnits = computed(() => {
@@ -355,7 +363,7 @@ const clearFilters = () => {
   filterLevel.value = ''
   filterStatus.value = ''
   filterReviewStatus.value = ''
-  filterDepartment.value = ''
+  if (!departmentLocked.value) filterDepartment.value = ''
   filterUnit.value = ''
 }
 
@@ -384,11 +392,20 @@ const viewRisk = (risk) => {
   router.push(`/risk/${risk.name}`)
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (store.risks.length === 0) {
     store.loadRisks()
   }
-  loadDepartmentsAndUnits()
+  await loadDepartmentsAndUnits()
+  try {
+    const user = await api.getCurrentUser()
+    if (!user.is_global_viewer && user.department) {
+      filterDepartment.value = user.department
+      departmentLocked.value = true
+    }
+  } catch (err) {
+    console.error('Failed to get current user for dept filter', err)
+  }
 })
 </script>
 

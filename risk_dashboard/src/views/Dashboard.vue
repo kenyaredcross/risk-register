@@ -57,96 +57,116 @@
     <div v-else>
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6 mb-8">
-        <StatsCard
-          :value="filteredStats.total"
-          label="Total Risks"
-          variant="default"
-          :delay="0"
+        <div
+          @click="toggleCardFilter(null)"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === null ? 'ring-2 ring-charcoal ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Show all risks"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.total" label="Total Risks" variant="default" :delay="0">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.critical"
-          label="Critical Risks"
-          variant="critical"
-          :delay="100"
+        <div
+          @click="toggleCardFilter('Critical')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'Critical' ? 'ring-2 ring-red-primary ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter by Critical"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.critical" label="Critical Risks" variant="critical" :delay="100">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.high"
-          label="High Risks"
-          variant="high"
-          :delay="200"
+        <div
+          @click="toggleCardFilter('High')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'High' ? 'ring-2 ring-orange-500 ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter by High"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.high" label="High Risks" variant="high" :delay="200">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.medium"
-          label="Medium Risks"
-          variant="medium"
-          :delay="300"
+        <div
+          @click="toggleCardFilter('Medium')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'Medium' ? 'ring-2 ring-yellow-500 ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter by Medium"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.medium" label="Medium Risks" variant="medium" :delay="300">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.low"
-          label="Low Risks"
-          variant="low"
-          :delay="400"
+        <div
+          @click="toggleCardFilter('Low')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'Low' ? 'ring-2 ring-green-500 ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter by Low"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.low" label="Low Risks" variant="low" :delay="400">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.overdue"
-          label="Overdue Reviews"
-          variant="critical"
-          :delay="500"
+        <div
+          @click="toggleCardFilter('overdue')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'overdue' ? 'ring-2 ring-red-primary ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter overdue reviews"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.overdue" label="Overdue Reviews" variant="critical" :delay="500">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
 
-        <StatsCard
-          :value="filteredStats.dueSoon"
-          label="Due Soon"
-          variant="medium"
-          :delay="600"
+        <div
+          @click="toggleCardFilter('dueSoon')"
+          class="cursor-pointer rounded-xl transition-all duration-150"
+          :class="activeCardFilter === 'dueSoon' ? 'ring-2 ring-yellow-500 ring-offset-2' : 'hover:scale-[1.02]'"
+          title="Filter due soon"
         >
-          <template #icon>
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </template>
-        </StatsCard>
+          <StatsCard :value="filteredStats.dueSoon" label="Due Soon" variant="medium" :delay="600">
+            <template #icon>
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </template>
+          </StatsCard>
+        </div>
+      </div>
+      <!-- Active card filter indicator -->
+      <div v-if="activeCardFilter !== null" class="mb-4 flex items-center gap-2">
+        <span class="text-sm text-medium-gray">Filtering recent risks by:</span>
+        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-light-gray text-charcoal">{{ cardFilterLabel }}</span>
+        <button @click="toggleCardFilter(null)" class="text-xs text-red-primary hover:text-red-dark font-medium">Clear</button>
       </div>
 
       <!-- Risk Matrix -->
@@ -161,7 +181,10 @@
       <!-- Recent Risks -->
       <div class="animate-slide-up">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <h2 class="text-2xl font-bold text-charcoal">Recent Risks</h2>
+          <h2 class="text-2xl font-bold text-charcoal">
+            Recent Risks
+            <span v-if="activeCardFilter !== null" class="ml-2 text-base font-normal text-medium-gray">— {{ cardFilterLabel }}</span>
+          </h2>
           <div class="flex flex-wrap items-center gap-3">
             <!-- View Toggle -->
             <div class="inline-flex items-center bg-light-gray rounded-lg p-1 border border-light-border">
@@ -334,6 +357,16 @@ const filterUnit = ref('')
 const departments = ref([])
 const allUnits = ref([])
 const departmentLocked = ref(false) // true when dept is auto-set and user can't change it
+const activeCardFilter = ref(null)  // null | 'Critical' | 'High' | 'Medium' | 'Low' | 'overdue' | 'dueSoon'
+
+const toggleCardFilter = (val) => {
+  activeCardFilter.value = activeCardFilter.value === val ? null : val
+}
+
+const cardFilterLabel = computed(() => {
+  const labels = { Critical: 'Critical', High: 'High', Medium: 'Medium', Low: 'Low', overdue: 'Overdue Reviews', dueSoon: 'Due Soon' }
+  return labels[activeCardFilter.value] || ''
+})
 
 // Roles that can see all departments (no auto-filter)
 const GLOBAL_VIEW_ROLES = new Set(['System Manager', 'KRCS HOR', 'KRCS DSG'])
@@ -388,7 +421,15 @@ const filteredStats = computed(() => {
 })
 
 const recentRisks = computed(() => {
-  return filteredRisks.value.slice(0, 6)
+  let risks = filteredRisks.value
+  if (activeCardFilter.value === 'Critical') risks = risks.filter(r => r.risk_level === 'Critical')
+  else if (activeCardFilter.value === 'High') risks = risks.filter(r => r.risk_level === 'High')
+  else if (activeCardFilter.value === 'Medium') risks = risks.filter(r => r.risk_level === 'Medium')
+  else if (activeCardFilter.value === 'Low') risks = risks.filter(r => r.risk_level === 'Low')
+  else if (activeCardFilter.value === 'overdue') risks = risks.filter(r => r.review_status === 'Overdue')
+  else if (activeCardFilter.value === 'dueSoon') risks = risks.filter(r => r.review_status === 'Due Soon')
+  // Most recently created first
+  return [...risks].sort((a, b) => new Date(b.creation) - new Date(a.creation)).slice(0, 6)
 })
 
 const handleCellClick = ({ risks }) => {
@@ -405,6 +446,7 @@ const clearFilters = () => {
   // Never clear the department if it's locked (auto-set from user profile)
   if (!departmentLocked.value) filterDepartment.value = ''
   filterUnit.value = ''
+  activeCardFilter.value = null
 }
 
 const getDepartmentName = (deptId) => {

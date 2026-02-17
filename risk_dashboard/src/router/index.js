@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 
+const PREF_KEY = 'krcs_primary_dashboard'
+
 const routes = [
   {
     path: '/login',
@@ -9,9 +11,23 @@ const routes = [
     meta: { public: true }
   },
   {
+    // "/" redirects to the user's preferred primary dashboard
     path: '/',
+    name: 'Home',
+    redirect: () => {
+      const pref = localStorage.getItem(PREF_KEY) || 'risk'
+      return pref === 'matrix' ? '/matrix' : '/dashboard'
+    }
+  },
+  {
+    path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
+  },
+  {
+    path: '/matrix',
+    name: 'CategoryMatrix',
+    component: () => import('../views/RiskCategoryMatrix.vue')
   },
   {
     path: '/risks',

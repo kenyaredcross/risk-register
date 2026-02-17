@@ -20,13 +20,46 @@
           <!-- Navigation -->
           <div class="hidden md:flex items-center space-x-6">
             <nav class="flex space-x-6">
-              <router-link
-                to="/"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path === '/' }"
-              >
-                Dashboard
-              </router-link>
+              <!-- Dashboard dropdown -->
+              <div class="relative" ref="dashboardDropdownRef">
+                <button
+                  type="button"
+                  class="nav-link flex items-center gap-1"
+                  :class="{ 'nav-link-active': isDashboardActive }"
+                  @click="dashboardDropdownOpen = !dashboardDropdownOpen"
+                >
+                  Dashboard
+                  <svg class="w-3.5 h-3.5 mt-0.5 transition-transform" :class="{ 'rotate-180': dashboardDropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <!-- Dropdown panel -->
+                <div
+                  v-if="dashboardDropdownOpen"
+                  class="absolute left-0 top-full mt-1 w-48 bg-white rounded-lg shadow-elegant border border-light-border py-1 z-50"
+                >
+                  <button
+                    @click="switchDashboard('/dashboard')"
+                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-light-gray transition-colors flex items-center justify-between"
+                    :class="$route.path === '/dashboard' ? 'text-red-primary font-semibold' : 'text-charcoal'"
+                  >
+                    Risk Dashboard
+                    <svg v-if="$route.path === '/dashboard'" class="w-3.5 h-3.5 text-red-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <button
+                    @click="switchDashboard('/matrix')"
+                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-light-gray transition-colors flex items-center justify-between"
+                    :class="$route.path === '/matrix' ? 'text-red-primary font-semibold' : 'text-charcoal'"
+                  >
+                    Category Matrix
+                    <svg v-if="$route.path === '/matrix'" class="w-3.5 h-3.5 text-red-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               <router-link
                 to="/risks"
                 class="nav-link"
@@ -111,9 +144,15 @@
               <div class="text-xs text-medium-gray">{{ authStore.user }}</div>
             </div>
           </div>
-          <router-link to="/" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
-            Dashboard
-          </router-link>
+          <div class="py-1">
+            <p class="text-xs font-semibold text-medium-gray uppercase tracking-wide mb-1">Dashboards</p>
+            <router-link to="/dashboard" class="block py-1.5 pl-3 text-charcoal hover:text-red-primary" :class="{ 'text-red-primary font-semibold': $route.path === '/dashboard' }" @click="mobileMenuOpen = false">
+              Risk Dashboard
+            </router-link>
+            <router-link to="/matrix" class="block py-1.5 pl-3 text-charcoal hover:text-red-primary" :class="{ 'text-red-primary font-semibold': $route.path === '/matrix' }" @click="mobileMenuOpen = false">
+              Category Matrix
+            </router-link>
+          </div>
           <router-link to="/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Risk Register
           </router-link>
@@ -170,20 +209,38 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from './stores/authStore'
 
 const mobileMenuOpen = ref(false)
+const dashboardDropdownOpen = ref(false)
+const dashboardDropdownRef = ref(null)
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 
 const isLoginPage = computed(() => route.name === 'Login')
+const isDashboardActive = computed(() => route.path === '/dashboard' || route.path === '/matrix')
+
+const switchDashboard = (target) => {
+  dashboardDropdownOpen.value = false
+  router.push(target)
+}
 
 const handleLogout = async () => {
   mobileMenuOpen.value = false
   await authStore.logout()
 }
+
+const handleOutsideClick = (e) => {
+  if (dashboardDropdownRef.value && !dashboardDropdownRef.value.contains(e.target)) {
+    dashboardDropdownOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleOutsideClick))
+onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 </script>
 
 <style scoped>

@@ -28,6 +28,7 @@ export function useApi() {
             'risk_level',
             'risk_owner',
             'department',
+            'unit',
             'region',
             'status',
             'review_frequency',
@@ -463,6 +464,20 @@ export function useApi() {
     }
   }
 
+  const getCategoryMatrix = async ({ viewBy = 'department', filterDepartment = '', filterStatus = '', filterLevel = '' } = {}) => {
+    try {
+      const params = { view_by: viewBy }
+      if (filterDepartment) params.filter_department = filterDepartment
+      if (filterStatus) params.filter_status = filterStatus
+      if (filterLevel) params.filter_level = filterLevel
+      const res = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.program_risk_register.api.get_category_matrix', { params })
+      return res.data.message || { categories: [], axis: [], matrix: {}, totals_by_category: {}, totals_by_axis: {}, total: 0 }
+    } catch (err) {
+      console.error('Failed to get category matrix:', err)
+      return { categories: [], axis: [], matrix: {}, totals_by_category: {}, totals_by_axis: {}, total: 0 }
+    }
+  }
+
   return {
     loading,
     error,
@@ -492,5 +507,6 @@ export function useApi() {
     toggleUserEnabled,
     getAdminMeta,
     getCurrentUser,
+    getCategoryMatrix,
   }
 }

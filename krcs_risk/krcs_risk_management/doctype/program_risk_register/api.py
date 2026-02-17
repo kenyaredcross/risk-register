@@ -51,25 +51,24 @@ def _is_global_approver(roles=None):
 def _get_employee_department(user):
     """
     Return the Department linked to the given user's Employee record, or None.
-    Looks up Employee where 'user_id' == user.
+    Returns None gracefully if the Employee doctype does not exist on this installation.
     """
-    emp = frappe.db.get_value(
-        "Employee", {"user_id": user, "status": "Active"}, "department"
-    )
-    return emp or None
+    try:
+        emp = frappe.db.get_value(
+            "Employee", {"user_id": user, "status": "Active"}, "department"
+        )
+        return emp or None
+    except Exception:
+        return None
 
 
 def _get_employee_projects(user):
     """
     Return a set of Project names where the user is listed as Project Manager.
-    Checks the Project DocType field 'project_manager' (Link to User).
+    NOTE: This installation's Project doctype does not have a project_manager field,
+    so we always return an empty set (project-based routing is not applicable here).
     """
-    projects = frappe.get_all(
-        "Project",
-        filters={"project_manager": user, "status": ["!=", "Cancelled"]},
-        pluck="name",
-    )
-    return set(projects)
+    return set()
 
 
 def _get_creator_primary_krcs_role(creator_user):
@@ -106,41 +105,37 @@ def _can_approve(risk_doc, roles=None):
     Return True if the current user is eligible to approve/reject the given risk.
 
     Routing rules (based on creator's role):
-    - Risk created by KRCS RPC       → KRCS Project Manager who manages the
-                                        risk's project (or any PM if no project)
+    - Risk created by KRCS RPC       → KRCS Project Manager in the same department
     - Risk created by KRCS PM        → KRCS HOD of the risk's department
     - All other creators             → KRCS HOD of the risk's department (fallback)
 
     Global roles (KRCS HOR, KRCS DSG, System Manager) can always approve any risk.
-    A user can never approve their own risk (self-approval is always denied).
+    HOD can approve risks in their own department, including risks they created.
+    RPC and PM cannot approve their own risks.
     """
     if roles is None:
         roles = _get_user_roles()
 
     user = frappe.session.user
 
-    # Self-approval is never allowed — the creator cannot approve their own risk
-    if user == risk_doc.owner:
-        return False
-
-    # Global approvers qualify for any risk they didn't create
+    # Global approvers can approve any risk (including their own)
     if _is_global_approver(roles):
         return True
 
     required_role = _required_approver_role(risk_doc)
 
     if required_role == "KRCS Project Manager":
-        # Must be a PM and manage this risk's project
-        if "KRCS Project Manager" in roles:
-            user_projects = _get_employee_projects(user)
-            # If the risk has a project, PM must manage it; if no project, any PM qualifies
-            if not risk_doc.project or risk_doc.project in user_projects:
+        # PM must be in the same department. PMs cannot approve their own risks.
+        if "KRCS Project Manager" in roles and user != risk_doc.owner:
+            user_dept = _get_employee_department(user) or _get_current_user_department()
+            if user_dept and user_dept == risk_doc.department:
                 return True
 
     elif required_role == "KRCS HOD":
-        # Must be an HOD in the same department as the risk
+        # HOD must be in the same department.
+        # HOD CAN approve risks they created (self-approval allowed for HOD).
         if "KRCS HOD" in roles:
-            user_dept = _get_employee_department(user)
+            user_dept = _get_employee_department(user) or _get_current_user_department()
             if user_dept and user_dept == risk_doc.department:
                 return True
 
@@ -273,10 +268,13 @@ def can_approve_risk(risk_name):
     This is the per-risk scoped check used by the Vue dashboard and Frappe desk.
     """
     try:
+        user = frappe.session.user
         doc = frappe.get_doc("Program Risk Register", risk_name)
-        is_own_risk = frappe.session.user == doc.owner
         eligible = _can_approve(doc)
         required_role = _required_approver_role(doc)
+        # is_own_risk drives the "Awaiting approval from..." UI message.
+        # Only set it when the user cannot approve (i.e. they're waiting on someone else).
+        is_own_risk = (user == doc.owner) and not eligible
         return {
             "can_approve": eligible,
             "is_own_risk": is_own_risk,
@@ -437,6 +435,126 @@ def get_departments():
     for dept in departments:
         dept["units"] = unit_map.get(dept["name"], [])
     return departments
+
+
+@frappe.whitelist()
+def get_category_matrix(view_by="department", filter_department=None, filter_status=None, filter_level=None):
+    """
+    Return risk counts grouped by risk_category × department | unit | project.
+    Used by the Risk Category Matrix dashboard.
+    view_by: 'department' | 'unit' | 'project'
+    """
+    RISK_CATEGORIES = [
+        "Strategic", "Operational", "Financial",
+        "Compliance", "Safeguarding & Security", "Reputational"
+    ]
+    LEVEL_ORDER = {"Critical": 4, "High": 3, "Medium": 2, "Low": 1}
+
+    roles = _get_user_roles()
+    GLOBAL_VIEW_ROLES = {"System Manager", "KRCS HOR", "KRCS DSG"}
+    is_global = bool(roles & GLOBAL_VIEW_ROLES)
+    user_dept = None if is_global else _get_current_user_department()
+
+    # Risk filters
+    filters = {}
+    if filter_status:
+        filters["status"] = filter_status
+    if filter_level:
+        filters["risk_level"] = filter_level
+    # Scope by department for non-global viewers (applies to all view modes)
+    if not is_global and user_dept:
+        filters["department"] = user_dept
+    elif filter_department and view_by in ("unit", "department"):
+        filters["department"] = filter_department
+
+    risks = frappe.get_all(
+        "Program Risk Register",
+        filters=filters,
+        fields=["name", "risk_category", "department", "unit", "project", "risk_level", "status"]
+    )
+
+    # Build axis (columns) depending on view_by
+    if view_by == "unit":
+        unit_filters = {}
+        if not is_global and user_dept:
+            unit_filters["department"] = user_dept
+        elif filter_department:
+            unit_filters["department"] = filter_department
+        axis_docs = frappe.get_all(
+            "Unit", filters=unit_filters,
+            fields=["name", "unit_name"],
+            order_by="unit_name asc"
+        )
+        axis_key = "unit"
+        # Build label map from axis_docs
+        label_map = {d["name"]: d["unit_name"] for d in axis_docs}
+
+    elif view_by == "project":
+        # Get all distinct projects referenced by the filtered risks
+        project_names = list({r["project"] for r in risks if r.get("project")})
+        if project_names:
+            proj_docs = frappe.get_all(
+                "Project",
+                filters=[["name", "in", project_names]],
+                fields=["name", "project_name"],
+                order_by="project_name asc"
+            )
+        else:
+            proj_docs = []
+        axis_docs = proj_docs
+        axis_key = "project"
+        label_map = {d["name"]: d.get("project_name") or d["name"] for d in axis_docs}
+
+    else:  # department
+        dept_filters = {}
+        if not is_global and user_dept:
+            dept_filters["name"] = user_dept
+        axis_docs = frappe.get_all(
+            "Department", filters=dept_filters,
+            fields=["name", "department_name"],
+            order_by="department_name asc"
+        )
+        axis_key = "department"
+        label_map = {d["name"]: d["department_name"] for d in axis_docs}
+
+    # Build matrix: { category: { axis_val: { count, highest_level, risks[] } } }
+    matrix = {cat: {} for cat in RISK_CATEGORIES}
+    totals_by_category = {cat: 0 for cat in RISK_CATEGORIES}
+    totals_by_axis = {doc["name"]: 0 for doc in axis_docs}
+
+    for risk in risks:
+        cat = risk.get("risk_category")
+        axis_val = risk.get(axis_key)
+        if not cat or cat not in RISK_CATEGORIES:
+            continue
+        if not axis_val:
+            continue
+        if axis_val not in matrix[cat]:
+            matrix[cat][axis_val] = {"count": 0, "highest_level": None, "risks": []}
+        cell = matrix[cat][axis_val]
+        cell["count"] += 1
+        cell["risks"].append({
+            "name": risk["name"],
+            "risk_level": risk["risk_level"],
+            "status": risk["status"]
+        })
+        current_order = LEVEL_ORDER.get(cell["highest_level"], 0)
+        new_order = LEVEL_ORDER.get(risk["risk_level"], 0)
+        if new_order > current_order:
+            cell["highest_level"] = risk["risk_level"]
+        totals_by_category[cat] = totals_by_category.get(cat, 0) + 1
+        if axis_val in totals_by_axis:
+            totals_by_axis[axis_val] += 1
+
+    return {
+        "categories": RISK_CATEGORIES,
+        "axis": [{"name": d["name"], "label": label_map.get(d["name"], d["name"])} for d in axis_docs],
+        "matrix": matrix,
+        "totals_by_category": totals_by_category,
+        "totals_by_axis": totals_by_axis,
+        "total": len(risks),
+        "is_global": is_global,
+    }
 
 
 @frappe.whitelist()

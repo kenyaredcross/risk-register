@@ -134,12 +134,12 @@
             <label class="block text-sm font-medium text-charcoal mb-1">Risk Category *</label>
             <select v-model="form.risk_category" class="input w-full">
               <option value="">Select Category</option>
-              <option value="Financial">Financial</option>
-              <option value="Operational">Operational</option>
               <option value="Strategic">Strategic</option>
+              <option value="Operational">Operational</option>
+              <option value="Financial">Financial</option>
               <option value="Compliance">Compliance</option>
+              <option value="Safeguarding & Security">Safeguarding &amp; Security</option>
               <option value="Reputational">Reputational</option>
-              <option value="Technology">Technology</option>
             </select>
           </div>
 
@@ -449,12 +449,18 @@
           </svg>
           Back
         </button>
-        <div class="flex gap-3 sm:justify-end">
-          <button type="button" @click="handleSubmit(true)" :disabled="loading" class="btn btn-outline">
-            {{ loading ? 'Creating...' : 'Submit & Add Another' }}
+        <div class="flex gap-3 sm:justify-end flex-wrap">
+          <button type="button" @click="handleSubmit(false, false)" :disabled="loading" class="btn btn-outline">
+            {{ loading && submitMode === 'draft' ? 'Saving...' : 'Save as Draft' }}
           </button>
-          <button type="button" @click="handleSubmit(false)" :disabled="loading" class="btn btn-primary">
-            {{ loading ? 'Creating...' : 'Submit Risk' }}
+          <button type="button" @click="handleSubmit(true, false)" :disabled="loading" class="btn btn-outline">
+            {{ loading && submitMode === 'another' ? 'Creating...' : 'Save & Add Another' }}
+          </button>
+          <button type="button" @click="handleSubmit(true, true)" :disabled="loading" class="btn btn-outline">
+            {{ loading && submitMode === 'approvalAnother' ? 'Submitting...' : 'Submit for Approval & Add Another' }}
+          </button>
+          <button type="button" @click="handleSubmit(false, true)" :disabled="loading" class="btn btn-primary">
+            {{ loading && submitMode === 'approval' ? 'Submitting...' : 'Submit for Approval' }}
           </button>
         </div>
       </div>
@@ -562,6 +568,7 @@ const step2Error = ref('')
 
 // ── Master data ───────────────────────────────────────────────────────────────
 const loading = ref(false)
+const submitMode = ref('') // 'draft' | 'another' | 'approval'
 const error = ref('')
 const departments = ref([])
 const projects = ref([])
@@ -821,11 +828,11 @@ const handleCreateUnit = async () => {
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 /**
- * @param {boolean} addAnother — if true, reset risk-specific fields and go back
- *   to step 2 keeping the Basic Info (step 1) intact so the user can quickly
- *   enter another risk for the same project / department / category.
+ * @param {boolean} addAnother       — reset risk fields and stay on form to add another
+ * @param {boolean} forApproval      — after saving, immediately submit for approval
  */
-const handleSubmit = async (addAnother) => {
+const handleSubmit = async (addAnother, forApproval = false) => {
+  submitMode.value = addAnother && forApproval ? 'approvalAnother' : addAnother ? 'another' : forApproval ? 'approval' : 'draft'
   loading.value = true
   error.value = ''
   try {
@@ -870,6 +877,13 @@ const handleSubmit = async (addAnother) => {
     const res = await axios.post('/api/resource/Program Risk Register', docData)
 
     if (res.data?.data) {
+      const riskName = res.data.data.name
+
+      // If submitting for approval, call the approval endpoint before navigating
+      if (forApproval) {
+        await api.submitForApproval(riskName)
+      }
+
       if (addAnother) {
         // Keep step-1 basic info; reset only steps 2-3 fields
         form.value.risk_description = ''
@@ -884,7 +898,7 @@ const handleSubmit = async (addAnother) => {
         currentStep.value = 2
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
-        router.push(`/risk/${res.data.data.name}`)
+        router.push(`/risk/${riskName}`)
       }
     } else {
       error.value = 'Failed to create risk. Please try again.'
@@ -893,6 +907,7 @@ const handleSubmit = async (addAnother) => {
     error.value = err.response?.data?.message || err.response?.data?.exc || 'An error occurred while creating the risk.'
   } finally {
     loading.value = false
+    submitMode.value = ''
   }
 }
 

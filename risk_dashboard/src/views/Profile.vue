@@ -72,6 +72,34 @@
         <p v-else class="text-medium-gray">No KRCS roles assigned</p>
       </div>
 
+      <!-- Preferences -->
+      <div class="card">
+        <h2 class="card-header">Preferences</h2>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-charcoal mb-1">Primary Dashboard</label>
+            <p class="text-xs text-medium-gray">Choose which dashboard opens when you click "Dashboard" in the nav</p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              @click="setPrimaryDashboard('risk')"
+              :class="primaryDashboard === 'risk' ? 'btn btn-primary' : 'btn btn-outline'"
+              class="text-sm px-4 py-2"
+            >
+              Risk Dashboard
+            </button>
+            <button
+              @click="setPrimaryDashboard('matrix')"
+              :class="primaryDashboard === 'matrix' ? 'btn btn-primary' : 'btn btn-outline'"
+              class="text-sm px-4 py-2"
+            >
+              Category Matrix
+            </button>
+          </div>
+        </div>
+        <p v-if="prefSaved" class="text-xs text-green-600 mt-2">Preference saved.</p>
+      </div>
+
       <!-- All System Roles -->
       <div class="card">
         <h2 class="card-header">System Roles</h2>
@@ -183,10 +211,21 @@
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
+const PREF_KEY = 'krcs_primary_dashboard'
+
 const loading = ref(true)
 const error = ref('')
 const profile = ref(null)
 const departments = ref([])
+const primaryDashboard = ref(localStorage.getItem(PREF_KEY) || 'risk')
+const prefSaved = ref(false)
+
+const setPrimaryDashboard = (val) => {
+  primaryDashboard.value = val
+  localStorage.setItem(PREF_KEY, val)
+  prefSaved.value = true
+  setTimeout(() => { prefSaved.value = false }, 2000)
+}
 
 const krcsRoles = computed(() => {
   if (!profile.value?.roles) return []
