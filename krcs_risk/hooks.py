@@ -73,6 +73,7 @@ add_to_apps_screen = [
 # Fixtures
 # --------
 fixtures = [
+    {"dt": "Custom Field", "filters": [["name", "=", "User-krcs_department"]]},
     {"dt": "Region"},
     {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
     {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},
