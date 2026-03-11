@@ -2,6 +2,20 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
 
+const KRCS_ROLES = new Set([
+  'System Manager',
+  'KRCS HOR',
+  'KRCS DSG',
+  'KRCS HOD',
+  'KRCS Project Manager',
+  'KRCS RPC',
+  'KRCS Finance Officer',
+  'KRCS Procurement Manager',
+  'KRCS Logistics Manager',
+  'KRCS HR Manager',
+  'KRCS Audit',
+])
+
 export const useAuthStore = defineStore('auth', () => {
   // State — resolved via session API on first navigation
   const user = ref(null)
@@ -14,6 +28,8 @@ export const useAuthStore = defineStore('auth', () => {
   const isPM = computed(() => roles.value.includes('KRCS Project Manager'))
   // HOD and PM can access the Users admin page to manage users in their department
   const canManageUsers = computed(() => isSystemManager.value || isHOD.value || isPM.value)
+  // True if user has at least one KRCS role (required for all dashboard access)
+  const hasKrcsRole = computed(() => roles.value.some(r => KRCS_ROLES.has(r)))
 
   /**
    * Login via Frappe's login endpoint.
@@ -113,5 +129,5 @@ export const useAuthStore = defineStore('auth', () => {
     await fetchCurrentUser()
   }
 
-  return { user, fullName, roles, isLoggedIn, isSystemManager, isHOD, isPM, canManageUsers, login, logout, checkSession }
+  return { user, fullName, roles, isLoggedIn, isSystemManager, isHOD, isPM, canManageUsers, hasKrcsRole, login, logout, checkSession }
 })

@@ -89,6 +89,12 @@ router.beforeEach(async (to) => {
     return { name: 'Login', query: { redirect: to.fullPath } }
   }
 
+  // User is logged in but has no KRCS role — send back to Frappe login
+  if (!authStore.hasKrcsRole) {
+    window.location.href = '/login'
+    return false
+  }
+
   // Check System Manager requirement for admin routes (roles reference)
   if (to.meta.requiresSystemManager && !authStore.isSystemManager) {
     return { name: 'Dashboard' }

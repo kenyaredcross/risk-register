@@ -1,104 +1,92 @@
 {
- "actions": [],
- "allow_rename": 1,
- "creation": "2026-02-10 00:00:00.000000",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "review_date",
-  "reviewed_by",
-  "col_break_1",
-  "next_review_date",
-  "section_break_summary",
-  "summary",
-  "section_break_actions",
-  "actions"
- ],
- "fields": [
-  {
-   "fieldname": "review_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Review Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "reviewed_by",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Reviewed By"
-  },
-  {
-   "fieldname": "col_break_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "next_review_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Next Review Date"
-  },
-  {
-   "fieldname": "section_break_summary",
-   "fieldtype": "Section Break",
-   "label": "Summary of Review"
-  },
-  {
-   "fieldname": "summary",
-   "fieldtype": "Long Text",
-   "in_list_view": 1,
-   "label": "Summary of Review"
-  },
-  {
-   "fieldname": "section_break_actions",
-   "fieldtype": "Section Break",
-   "label": "Decisions / Actions Agreed"
-  },
-  {
-   "fieldname": "actions",
-   "fieldtype": "Long Text",
-   "in_list_view": 1,
-   "label": "Decisions / Actions Agreed"
-  }
- ],
- "index_web_pages_for_search": 0,
- "is_submittable": 0,
- "istable": 1,
- "links": [],
- "modified": "2026-02-11 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "KRCS Risk Management",
- "name": "Risk Review",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 0,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "All",
-   "share": 1,
-   "write": 1
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2026-02-10 00:00:00.000000",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "review_date",
+        "reviewed_by",
+        "col_break_1",
+        "next_review_date",
+        "section_break_summary",
+        "summary",
+        "section_break_actions",
+        "actions"
+    ],
+    "fields": [
+        {
+            "fieldname": "review_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Review Date",
+            "reqd": 1
+        },
+        {
+            "fieldname": "reviewed_by",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Reviewed By"
+        },
+        {
+            "fieldname": "col_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "next_review_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Next Review Date"
+        },
+        {
+            "fieldname": "section_break_summary",
+            "fieldtype": "Section Break",
+            "label": "Summary of Review"
+        },
+        {
+            "fieldname": "summary",
+            "fieldtype": "Long Text",
+            "in_list_view": 1,
+            "label": "Summary of Review"
+        },
+        {
+            "fieldname": "section_break_actions",
+            "fieldtype": "Section Break",
+            "label": "Decisions / Actions Agreed"
+        },
+        {
+            "fieldname": "actions",
+            "fieldtype": "Long Text",
+            "in_list_view": 1,
+            "label": "Decisions / Actions Agreed"
+        }
+    ],
+    "index_web_pages_for_search": 0,
+    "is_submittable": 0,
+    "istable": 1,
+    "links": [],
+    "modified": "2026-02-11 00:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "KRCS Risk Management",
+    "name": "Risk Review",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1
 }

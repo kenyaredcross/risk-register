@@ -1,445 +1,452 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "RISK-REG-.YYYY.-.#####",
- "creation": "2026-02-10 00:00:00",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "risk_type",
-  "project",
-  "department",
-  "unit",
-  "region",
-  "risk_category",
-  "col_break_header",
-  "status",
-  "workflow_state",
-  "risk_level",
-  "section_break_risk_details",
-  "risk_description",
-  "possible_causes",
-  "effects",
-  "section_break_rating",
-  "likelihood",
-  "impact",
-  "col_break_rating",
-  "overall_rating",
-  "section_break_mitigation",
-  "mitigating_actions",
-  "section_break_ownership",
-  "risk_owner",
-  "timeline",
-  "col_break_ownership",
-  "risk_status",
-  "section_break_review_schedule",
-  "review_frequency",
-  "next_review_due",
-  "col_break_review_schedule",
-  "review_status",
-  "section_break_approval",
-  "approved_by",
-  "approval_date",
-  "col_break_approval",
-  "rejection_reason",
-  "section_break_reviews",
-  "risk_reviews",
-  "section_break_remarks",
-  "remarks"
- ],
- "fields": [
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "fieldname": "department",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Department",
-   "options": "Department"
-  },
-  {
-   "description": "Unit operates under a Department",
-   "fieldname": "unit",
-   "fieldtype": "Link",
-   "label": "Unit",
-   "options": "Unit"
-  },
-  {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Region",
-   "options": "Region"
-  },
-  {
-   "fieldname": "risk_category",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Risk Category",
-   "options": "\nStrategic\nOperational\nFinancial\nCompliance\nSafeguarding & Security\nReputational"
-  },
-  {
-   "fieldname": "risk_type",
-   "fieldtype": "Select",
-   "in_list_view": 0,
-   "label": "Risk Type",
-   "options": "\nCorporate\nDepartmental\nProject"
-  },
-  {
-   "fieldname": "col_break_header",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Draft",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Status",
-   "options": "\nDraft\nPending Approval\nOpen\nPending Close Approval\nClosed\nRejected",
-   "read_only": 1
-  },
-  {
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "label": "Workflow State",
-   "options": "Workflow State",
-   "read_only": 1,
-   "hidden": 1
-  },
-  {
-   "fieldname": "risk_level",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Risk Level",
-   "options": "\nLow\nMedium\nHigh\nCritical",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_risk_details",
-   "fieldtype": "Section Break",
-   "label": "Risk Details"
-  },
-  {
-   "fieldname": "risk_description",
-   "fieldtype": "Small Text",
-   "label": "Risk Description",
-   "reqd": 1
-  },
-  {
-   "fieldname": "possible_causes",
-   "fieldtype": "Table",
-   "label": "Possible Causes",
-   "options": "Possible Cause"
-  },
-  {
-   "fieldname": "effects",
-   "fieldtype": "Table",
-   "label": "Effects / Consequences",
-   "options": "Risk Consequence"
-  },
-  {
-   "fieldname": "section_break_rating",
-   "fieldtype": "Section Break",
-   "label": "Risk Rating"
-  },
-  {
-   "description": "Scale 1\u20135",
-   "fieldname": "likelihood",
-   "fieldtype": "Int",
-   "label": "Risk Likelihood"
-  },
-  {
-   "description": "Scale 1\u20135",
-   "fieldname": "impact",
-   "fieldtype": "Int",
-   "label": "Risk Impact"
-  },
-  {
-   "fieldname": "col_break_rating",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "overall_rating",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "Overall Rating",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_mitigation",
-   "fieldtype": "Section Break",
-   "label": "Mitigation"
-  },
-  {
-   "fieldname": "mitigating_actions",
-   "fieldtype": "Table",
-   "label": "Mitigating Actions",
-   "options": "Mitigating Action"
-  },
-  {
-   "fieldname": "section_break_ownership",
-   "fieldtype": "Section Break",
-   "label": "Ownership & Timeline"
-  },
-  {
-   "fieldname": "risk_owner",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Risk Owner",
-   "options": "\nKRCS HOR\nKRCS DSG\nKRCS HOD\nKRCS Project Manager\nKRCS RPC\nKRCS Finance Officer\nKRCS Procurement Manager\nKRCS Logistics Manager\nKRCS HR Manager"
-  },
-  {
-   "fieldname": "timeline",
-   "fieldtype": "Select",
-   "label": "Timeline",
-   "options": "\nImmediate\nShort-term\nContinuous"
-  },
-  {
-   "fieldname": "col_break_ownership",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Open",
-   "fieldname": "risk_status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Risk Status",
-   "options": "\nOpen\nIn Progress\nMitigated\nEscalated"
-  },
-  {
-   "fieldname": "section_break_review_schedule",
-   "fieldtype": "Section Break",
-   "label": "Review Schedule"
-  },
-  {
-   "fieldname": "review_frequency",
-   "fieldtype": "Select",
-   "label": "Review Frequency",
-   "options": "\nDaily\nWeekly\nFortnightly\nMonthly\nQuarterly\nSemi-Annual\nAnnual",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "next_review_due",
-   "fieldtype": "Date",
-   "label": "Next Review Due",
-   "read_only": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "col_break_review_schedule",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Not Scheduled",
-   "fieldname": "review_status",
-   "fieldtype": "Select",
-   "label": "Review Status",
-   "options": "\nNot Scheduled\nOn Track\nDue Soon\nOverdue",
-   "read_only": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "section_break_approval",
-   "fieldtype": "Section Break",
-   "label": "Approval"
-  },
-  {
-   "fieldname": "approved_by",
-   "fieldtype": "Link",
-   "label": "Approved / Rejected By",
-   "options": "User",
-   "read_only": 1
-  },
-  {
-   "fieldname": "approval_date",
-   "fieldtype": "Date",
-   "label": "Approval Date",
-   "read_only": 1
-  },
-  {
-   "fieldname": "col_break_approval",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "rejection_reason",
-   "fieldtype": "Small Text",
-   "label": "Rejection Reason",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_reviews",
-   "fieldtype": "Section Break",
-   "label": "Risk Reviews"
-  },
-  {
-   "fieldname": "risk_reviews",
-   "fieldtype": "Table",
-   "label": "Risk Reviews",
-   "options": "Risk Review"
-  },
-  {
-   "fieldname": "section_break_remarks",
-   "fieldtype": "Section Break",
-   "label": "Remarks"
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
-  }
- ],
- "links": [],
- "modified": "2026-02-12 12:00:00.000000",
- "modified_by": "Administrator",
- "module": "KRCS Risk Management",
- "name": "Program Risk Register",
- "naming_rule": "Expression",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "All",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS HOR",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS DSG",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS HOD",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS Project Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS RPC",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS Finance Officer",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS Procurement Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS Logistics Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS HR Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "KRCS Audit",
-   "share": 1,
-   "write": 1
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [
-  {"color": "Grey", "title": "Draft"},
-  {"color": "Orange", "title": "Pending Approval"},
-  {"color": "Green", "title": "Open"},
-  {"color": "Orange", "title": "Pending Close Approval"},
-  {"color": "Blue", "title": "Closed"},
-  {"color": "Red", "title": "Rejected"}
- ],
- "track_changes": 1
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "RISK-REG-.YYYY.-.#####",
+    "creation": "2026-02-10 00:00:00",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+        "risk_type",
+        "project",
+        "department",
+        "unit",
+        "region",
+        "risk_category",
+        "col_break_header",
+        "status",
+        "workflow_state",
+        "risk_level",
+        "section_break_risk_details",
+        "risk_description",
+        "possible_causes",
+        "effects",
+        "section_break_rating",
+        "likelihood",
+        "impact",
+        "col_break_rating",
+        "overall_rating",
+        "section_break_mitigation",
+        "mitigating_actions",
+        "section_break_ownership",
+        "risk_owner",
+        "timeline",
+        "col_break_ownership",
+        "risk_status",
+        "section_break_review_schedule",
+        "review_frequency",
+        "next_review_due",
+        "col_break_review_schedule",
+        "review_status",
+        "section_break_approval",
+        "approved_by",
+        "approval_date",
+        "col_break_approval",
+        "rejection_reason",
+        "section_break_reviews",
+        "risk_reviews",
+        "section_break_remarks",
+        "remarks"
+    ],
+    "fields": [
+        {
+            "fieldname": "project",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Project",
+            "options": "Project"
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Department",
+            "options": "Department"
+        },
+        {
+            "description": "Unit operates under a Department",
+            "fieldname": "unit",
+            "fieldtype": "Link",
+            "label": "Unit",
+            "options": "Unit"
+        },
+        {
+            "fieldname": "region",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Region",
+            "options": "Region"
+        },
+        {
+            "fieldname": "risk_category",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Risk Category",
+            "options": "\nStrategic\nOperational\nFinancial\nCompliance\nSafeguarding & Security\nReputational"
+        },
+        {
+            "fieldname": "risk_type",
+            "fieldtype": "Select",
+            "in_list_view": 0,
+            "label": "Risk Type",
+            "options": "\nCorporate\nDepartmental\nProject"
+        },
+        {
+            "fieldname": "col_break_header",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Draft",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "\nDraft\nPending Approval\nOpen\nPending Close Approval\nClosed\nRejected",
+            "read_only": 1
+        },
+        {
+            "fieldname": "workflow_state",
+            "fieldtype": "Link",
+            "label": "Workflow State",
+            "options": "Workflow State",
+            "read_only": 1,
+            "hidden": 1
+        },
+        {
+            "fieldname": "risk_level",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Risk Level",
+            "options": "\nLow\nMedium\nHigh\nCritical",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_break_risk_details",
+            "fieldtype": "Section Break",
+            "label": "Risk Details"
+        },
+        {
+            "fieldname": "risk_description",
+            "fieldtype": "Small Text",
+            "label": "Risk Description",
+            "reqd": 1
+        },
+        {
+            "fieldname": "possible_causes",
+            "fieldtype": "Table",
+            "label": "Possible Causes",
+            "options": "Possible Cause"
+        },
+        {
+            "fieldname": "effects",
+            "fieldtype": "Table",
+            "label": "Effects / Consequences",
+            "options": "Risk Consequence"
+        },
+        {
+            "fieldname": "section_break_rating",
+            "fieldtype": "Section Break",
+            "label": "Risk Rating"
+        },
+        {
+            "description": "Scale 1\u20135",
+            "fieldname": "likelihood",
+            "fieldtype": "Int",
+            "label": "Risk Likelihood"
+        },
+        {
+            "description": "Scale 1\u20135",
+            "fieldname": "impact",
+            "fieldtype": "Int",
+            "label": "Risk Impact"
+        },
+        {
+            "fieldname": "col_break_rating",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "overall_rating",
+            "fieldtype": "Int",
+            "in_list_view": 1,
+            "label": "Overall Rating",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_break_mitigation",
+            "fieldtype": "Section Break",
+            "label": "Mitigation"
+        },
+        {
+            "fieldname": "mitigating_actions",
+            "fieldtype": "Table",
+            "label": "Mitigating Actions",
+            "options": "Mitigating Action"
+        },
+        {
+            "fieldname": "section_break_ownership",
+            "fieldtype": "Section Break",
+            "label": "Ownership & Timeline"
+        },
+        {
+            "fieldname": "risk_owner",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Risk Owner",
+            "options": "\nKRCS HOR\nKRCS DSG\nKRCS HOD\nKRCS Project Manager\nKRCS RPC\nKRCS Finance Officer\nKRCS Procurement Manager\nKRCS Logistics Manager\nKRCS HR Manager"
+        },
+        {
+            "fieldname": "timeline",
+            "fieldtype": "Select",
+            "label": "Timeline",
+            "options": "\nImmediate\nShort-term\nContinuous"
+        },
+        {
+            "fieldname": "col_break_ownership",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Open",
+            "fieldname": "risk_status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Risk Status",
+            "options": "\nOpen\nIn Progress\nMitigated\nEscalated"
+        },
+        {
+            "fieldname": "section_break_review_schedule",
+            "fieldtype": "Section Break",
+            "label": "Review Schedule"
+        },
+        {
+            "fieldname": "review_frequency",
+            "fieldtype": "Select",
+            "label": "Review Frequency",
+            "options": "\nDaily\nWeekly\nFortnightly\nMonthly\nQuarterly\nSemi-Annual\nAnnual",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "next_review_due",
+            "fieldtype": "Date",
+            "label": "Next Review Due",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "col_break_review_schedule",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Not Scheduled",
+            "fieldname": "review_status",
+            "fieldtype": "Select",
+            "label": "Review Status",
+            "options": "\nNot Scheduled\nOn Track\nDue Soon\nOverdue",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "section_break_approval",
+            "fieldtype": "Section Break",
+            "label": "Approval"
+        },
+        {
+            "fieldname": "approved_by",
+            "fieldtype": "Link",
+            "label": "Approved / Rejected By",
+            "options": "User",
+            "read_only": 1
+        },
+        {
+            "fieldname": "approval_date",
+            "fieldtype": "Date",
+            "label": "Approval Date",
+            "read_only": 1
+        },
+        {
+            "fieldname": "col_break_approval",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "rejection_reason",
+            "fieldtype": "Small Text",
+            "label": "Rejection Reason",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_break_reviews",
+            "fieldtype": "Section Break",
+            "label": "Risk Reviews"
+        },
+        {
+            "fieldname": "risk_reviews",
+            "fieldtype": "Table",
+            "label": "Risk Reviews",
+            "options": "Risk Review"
+        },
+        {
+            "fieldname": "section_break_remarks",
+            "fieldtype": "Section Break",
+            "label": "Remarks"
+        },
+        {
+            "fieldname": "remarks",
+            "fieldtype": "Small Text",
+            "label": "Remarks"
+        }
+    ],
+    "links": [],
+    "modified": "2026-02-12 12:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "KRCS Risk Management",
+    "name": "Program Risk Register",
+    "naming_rule": "Expression",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS HOR",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS DSG",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS HOD",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS Project Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS RPC",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS Finance Officer",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS Procurement Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS Logistics Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS HR Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "KRCS Audit",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [
+        {
+            "color": "Grey",
+            "title": "Draft"
+        },
+        {
+            "color": "Orange",
+            "title": "Pending Approval"
+        },
+        {
+            "color": "Green",
+            "title": "Open"
+        },
+        {
+            "color": "Orange",
+            "title": "Pending Close Approval"
+        },
+        {
+            "color": "Blue",
+            "title": "Closed"
+        },
+        {
+            "color": "Red",
+            "title": "Rejected"
+        }
+    ],
+    "track_changes": 1
 }
