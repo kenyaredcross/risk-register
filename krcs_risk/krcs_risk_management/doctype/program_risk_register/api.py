@@ -384,11 +384,12 @@ def _get_current_user_department():
 
 def _require_user_manager():
     """
-    Raise PermissionError unless the current user is System Manager, KRCS HOD, or KRCS Project Manager.
-    These roles are allowed to add/edit users within their own department.
+    Raise PermissionError unless the current user is System Manager, KRCS HOD, KRCS Project Manager, or KRCS Audit.
+    - System Manager, KRCS HOD, KRCS Project Manager: can add/edit users within their department
+    - KRCS Audit: can view users (read-only)
     """
     roles = _get_user_roles()
-    allowed = {"System Manager", "KRCS HOD", "KRCS Project Manager"}
+    allowed = {"System Manager", "KRCS HOD", "KRCS Project Manager", "KRCS Audit"}
     if not (roles & allowed):
         frappe.throw(_("You do not have permission to manage users."), frappe.PermissionError)
 

@@ -399,6 +399,7 @@
       v-if="showReviewForm"
       :review="currentReview"
       :review-index="currentReviewIndex"
+      :current-user="currentUser"
       @close="closeReviewForm"
       @submit="handleReviewSubmit"
     />
@@ -447,6 +448,7 @@ const sortedReviews = computed(() => {
 const showReviewForm = ref(false)
 const currentReview = ref(null)
 const currentReviewIndex = ref(null)
+const currentUser = ref(null)
 
 // Approval state
 const isApprover = ref(false)
@@ -603,5 +605,7 @@ onMounted(async () => {
   isApprover.value = approvalInfo.can_approve
   isOwnRisk.value = approvalInfo.is_own_risk || false
   awaitingApproverRole.value = approvalInfo.awaiting_approver_role || ''
+  // Load current user for review form
+  currentUser.value = await api.getCurrentUser()
 })
 </script>

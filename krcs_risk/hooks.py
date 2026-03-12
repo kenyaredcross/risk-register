@@ -74,7 +74,7 @@ add_to_apps_screen = [
 # --------
 fixtures = [
     {"dt": "Custom Field", "filters": [["name", "=", "User-krcs_department"]]},
-    {"dt": "Custom DocPerm", "filters": [["parent", "=", "Project"], ["role", "like", "KRCS %"]]},
+    {"dt": "Custom DocPerm", "filters": [["parent", "in", ["Project", "Region", "Program Risk Register"]], ["role", "like", "KRCS %"]]},
     {"dt": "Region"},
     {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
     {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},

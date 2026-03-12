@@ -21,7 +21,8 @@
               v-model="formData.review_date"
               type="date"
               required
-              class="input"
+              readonly
+              class="input bg-gray-50 cursor-not-allowed"
             />
           </div>
 
@@ -31,8 +32,8 @@
               v-model="formData.reviewed_by"
               type="text"
               required
-              placeholder="Enter reviewer name"
-              class="input"
+              readonly
+              class="input bg-gray-50 cursor-not-allowed"
             />
           </div>
         </div>
@@ -110,6 +111,10 @@ const props = defineProps({
   reviewIndex: {
     type: Number,
     default: null
+  },
+  currentUser: {
+    type: Object,
+    default: null
   }
 })
 
@@ -117,9 +122,18 @@ const emit = defineEmits(['close', 'submit'])
 
 const isEdit = computed(() => props.review !== null)
 
+// Get today's date in YYYY-MM-DD format
+const getTodayDate = () => {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const formData = ref({
-  review_date: props.review?.review_date || '',
-  reviewed_by: props.review?.reviewed_by || '',
+  review_date: props.review?.review_date || getTodayDate(),
+  reviewed_by: props.review?.reviewed_by || props.currentUser?.full_name || '',
   summary: props.review?.summary || '',
   actions: props.review?.actions || '',
   next_review_date: props.review?.next_review_date || ''
