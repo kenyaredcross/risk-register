@@ -66,6 +66,16 @@ const routes = [
     name: 'AdminRoles',
     component: () => import('../views/admin/Roles.vue'),
     meta: { requiresSystemManager: true }
+  },
+  {
+    path: '/coi-declaration/create',
+    name: 'COIDeclarationCreate',
+    component: () => import('../views/COIDeclaration.vue')
+  },
+  {
+    path: '/coi-declarations',
+    name: 'COIDeclarations',
+    component: () => import('../views/COIDeclarationList.vue')
   }
 ]
 

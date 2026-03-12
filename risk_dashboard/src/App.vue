@@ -67,6 +67,13 @@
               >
                 Risk Register
               </router-link>
+              <router-link
+                to="/coi-declarations"
+                class="nav-link"
+                :class="{ 'nav-link-active': $route.path.startsWith('/coi') }"
+              >
+                COI Declarations
+              </router-link>
               <!-- System Manager → full Admin (starts at Departments) -->
               <router-link
                 v-if="authStore.isSystemManager"
