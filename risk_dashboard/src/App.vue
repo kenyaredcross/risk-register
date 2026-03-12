@@ -68,7 +68,7 @@
                 Risk Register
               </router-link>
               <router-link
-                to="/coi-declarations"
+                to="/coi-dashboard"
                 class="nav-link"
                 :class="{ 'nav-link-active': $route.path.startsWith('/coi') }"
               >

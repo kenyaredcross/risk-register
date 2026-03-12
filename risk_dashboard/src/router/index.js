@@ -68,6 +68,11 @@ const routes = [
     meta: { requiresSystemManager: true }
   },
   {
+    path: '/coi-dashboard',
+    name: 'COIDashboard',
+    component: () => import('../views/COIDashboard.vue')
+  },
+  {
     path: '/coi-declaration/create',
     name: 'COIDeclarationCreate',
     component: () => import('../views/COIDeclaration.vue')
