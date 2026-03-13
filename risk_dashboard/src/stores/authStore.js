@@ -25,6 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoggedIn = computed(() => !!user.value && user.value !== 'Guest')
   const isSystemManager = computed(() => roles.value.includes('System Manager'))
   const isHOD = computed(() => roles.value.includes('KRCS HOD'))
+  const isHOR = computed(() => roles.value.includes('KRCS HOR'))
+  const isAudit = computed(() => roles.value.includes('KRCS Audit'))
   const isPM = computed(() => roles.value.includes('KRCS Project Manager'))
   // HOD and PM can access the Users admin page to manage users in their department
   const canManageUsers = computed(() => isSystemManager.value || isHOD.value || isPM.value)
@@ -129,5 +131,5 @@ export const useAuthStore = defineStore('auth', () => {
     await fetchCurrentUser()
   }
 
-  return { user, fullName, roles, isLoggedIn, isSystemManager, isHOD, isPM, canManageUsers, hasKrcsRole, login, logout, checkSession }
+  return { user, fullName, roles, isLoggedIn, isSystemManager, isHOD, isHOR, isAudit, isPM, canManageUsers, hasKrcsRole, login, logout, checkSession }
 })

@@ -1,21 +1,56 @@
 {
  "app": "krcs_risk",
- "bg_color": "red",
- "creation": "2026-02-13 10:00:00.000000",
+ "bg_color": "blue",
+ "creation": "2026-02-13 10:00:00",
  "docstatus": 0,
  "doctype": "Desktop Icon",
  "hidden": 0,
  "icon_type": "App",
  "idx": 0,
  "label": "Risk Dashboard",
- "link": "/risk-dashboard",
- "logo_url": "/assets/krcs_risk/logo.png",
+ "link": "/risk-dashboard#/risk-dashboard/register-dash",
  "link_type": "External",
- "modified": "2026-02-13 10:00:00.000000",
+ "logo_url": "/assets/krcs_risk/logo.png",
+ "modified": "2026-03-13 11:35:33.865944",
  "modified_by": "Administrator",
  "name": "Risk Dashboard",
  "owner": "Administrator",
+ "parent_icon": "Risk Mgt",
  "restrict_removal": 0,
- "roles": [],
+ "roles": [
+  {
+   "role": "KRCS Audit"
+  },
+  {
+   "role": "KRCS DSG"
+  },
+  {
+   "role": "KRCS Finance Officer"
+  },
+  {
+   "role": "KRCS HOD"
+  },
+  {
+   "role": "KRCS HOR"
+  },
+  {
+   "role": "KRCS HR Manager"
+  },
+  {
+   "role": "KRCS Project Manager"
+  },
+  {
+   "role": "KRCS RPC"
+  },
+  {
+   "role": "KRCS Logistics Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
  "standard": 1
 }

@@ -1,0 +1,336 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:COI-{employee}-{YYYY}-{####}",
+ "creation": "2026-03-12 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_information_section",
+  "employee",
+  "employee_name",
+  "user_id",
+  "column_break_basic",
+  "department",
+  "designation",
+  "declaration_type",
+  "declaration_date",
+  "section_break_financial",
+  "has_financial_interests",
+  "financial_interests_description",
+  "section_break_personal",
+  "has_personal_relationships",
+  "personal_relationships_description",
+  "section_break_supervisory",
+  "has_supervisory_roles",
+  "supervisory_roles_description",
+  "section_break_other_roles",
+  "has_other_roles",
+  "other_roles_description",
+  "section_break_public_office",
+  "plans_public_office",
+  "public_office_description",
+  "section_break_status",
+  "status",
+  "column_break_status",
+  "submitted_date",
+  "section_break_review",
+  "reviewed_by",
+  "review_date",
+  "review_comments",
+  "column_break_approval",
+  "approved_by",
+  "approval_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_information_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Information"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "label": "User ID",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_basic",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "declaration_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type of Declaration",
+   "options": "Annual Declaration\nChange in Circumstance",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "declaration_date",
+   "fieldtype": "Date",
+   "label": "Declaration Date",
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_financial",
+   "fieldtype": "Section Break",
+   "label": "Financial Interests"
+  },
+  {
+   "fieldname": "has_financial_interests",
+   "fieldtype": "Select",
+   "label": "Do you or your immediate family members, close relatives, or friends have any financial interests, direct or indirect, in suppliers, contractors, sub-grantees, or other third-party contractors of the society?",
+   "options": "No, neither myself nor my immediate family members, close relatives, or friends have any financial interests.\nYes, I and my immediate family members, close relatives, or friends have financial interests.",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.has_financial_interests && doc.has_financial_interests.startsWith('Yes')",
+   "fieldname": "financial_interests_description",
+   "fieldtype": "Small Text",
+   "label": "Describe the financial interests, direct or indirect, of suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
+   "mandatory_depends_on": "eval:doc.has_financial_interests && doc.has_financial_interests.startsWith('Yes')"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_personal",
+   "fieldtype": "Section Break",
+   "label": "Personal Relationships"
+  },
+  {
+   "fieldname": "has_personal_relationships",
+   "fieldtype": "Select",
+   "label": "Do you or your immediate family members, close relatives, or friends have any personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society?",
+   "options": "No, neither myself nor my immediate family members, close relatives, or friends have any personal relationships.\nYes, I and my immediate family members, close relatives, or friends have personal relationships.",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.has_personal_relationships && doc.has_personal_relationships.startsWith('Yes')",
+   "fieldname": "personal_relationships_description",
+   "fieldtype": "Small Text",
+   "label": "Describe the personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
+   "mandatory_depends_on": "eval:doc.has_personal_relationships && doc.has_personal_relationships.startsWith('Yes')"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_supervisory",
+   "fieldtype": "Section Break",
+   "label": "Supervisory Roles"
+  },
+  {
+   "fieldname": "has_supervisory_roles",
+   "fieldtype": "Select",
+   "label": "Do you or your family members or relatives have supervisory roles in Kenya Red Cross Society over each other?",
+   "options": "No, neither I nor my family members/relatives have supervisory roles in Kenya Red Cross Society over each other.\nYes, I and my family members or relatives have supervisory roles in Kenya Red Cross Society over each other.",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.has_supervisory_roles && doc.has_supervisory_roles.startsWith('Yes')",
+   "fieldname": "supervisory_roles_description",
+   "fieldtype": "Small Text",
+   "label": "Describe the supervisory roles at Kenya Red Cross Society that you or any of your family members or relatives have over each other.",
+   "mandatory_depends_on": "eval:doc.has_supervisory_roles && doc.has_supervisory_roles.startsWith('Yes')"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_other_roles",
+   "fieldtype": "Section Break",
+   "label": "Other Organizational Roles"
+  },
+  {
+   "fieldname": "has_other_roles",
+   "fieldtype": "Select",
+   "label": "I do not hold any trusteeship, directorship, or employment roles in any other organization.",
+   "options": "No, I do not hold any trusteeship, directorship, or employment roles in any other organization.\nYes, I do hold trusteeship, directorship, or employment roles in other organizations.",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.has_other_roles && doc.has_other_roles.startsWith('Yes')",
+   "fieldname": "other_roles_description",
+   "fieldtype": "Small Text",
+   "label": "Describe the trusteeship, directorship, or employment role you have in any other organization.",
+   "mandatory_depends_on": "eval:doc.has_other_roles && doc.has_other_roles.startsWith('Yes')"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_public_office",
+   "fieldtype": "Section Break",
+   "label": "Public Office"
+  },
+  {
+   "fieldname": "plans_public_office",
+   "fieldtype": "Select",
+   "label": "I am not running for or plan to run for public office in the foreseeable future.",
+   "options": "No, I am not running for or plan to run for public office in the foreseeable future.\nYes, I am running for or plan to run for public office in the foreseeable future.",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.plans_public_office && doc.plans_public_office.startsWith('Yes')",
+   "fieldname": "public_office_description",
+   "fieldtype": "Small Text",
+   "label": "Describe which public office you are running for or plan to run for in the foreseeable future.",
+   "mandatory_depends_on": "eval:doc.plans_public_office && doc.plans_public_office.startsWith('Yes')"
+  },
+  {
+   "fieldname": "section_break_status",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nSubmitted\nUnder Review\nApproved\nRejected",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "submitted_date",
+   "fieldtype": "Datetime",
+   "label": "Submitted Date",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_review",
+   "fieldtype": "Section Break",
+   "label": "Review & Approval"
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Link",
+   "label": "Reviewed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_date",
+   "fieldtype": "Datetime",
+   "label": "Review Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_comments",
+   "fieldtype": "Small Text",
+   "label": "Review Comments"
+  },
+  {
+   "fieldname": "column_break_approval",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Datetime",
+   "label": "Approval Date",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-03-12 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "KRCS Risk Management",
+ "name": "Conflict of Interest Declaration",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS HOD",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KRCS HOR",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "employee_name,department,declaration_type,status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}

@@ -1,0 +1,46 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"AswIU3_-h3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Conflict of Interest Declarations</span>\",\"col\":12}},{\"id\":\"oGGVQI-lqb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Conflict of Interest Declaration\",\"col\":3}},{\"id\":\"card_break_1\",\"type\":\"card_break\"},{\"id\":\"yBdZMSJqcP\",\"type\":\"card\",\"data\":{\"card_name\":\"My Declarations\",\"col\":4}},{\"id\":\"3KlRbrLdWY\",\"type\":\"card\",\"data\":{\"card_name\":\"Pending Reviews\",\"col\":4}},{\"id\":\"g8F5hPWqpN\",\"type\":\"card\",\"data\":{\"card_name\":\"All Declarations\",\"col\":4}}]",
+ "creation": "2026-03-12 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "file-signature",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Conflict of Interest",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Conflict of Interest Declaration",
+   "link_count": 0,
+   "link_to": "Conflict of Interest Declaration",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-12 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "KRCS Risk Management",
+ "name": "Conflict of Interest",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 3,
+ "shortcuts": [
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Conflict of Interest Declaration",
+   "link_to": "Conflict of Interest Declaration",
+   "type": "DocType"
+  }
+ ],
+ "title": "Conflict of Interest"
+}

@@ -1,8 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 
-const PREF_KEY = 'krcs_primary_dashboard'
-
 const routes = [
   {
     path: '/login',
@@ -11,16 +9,13 @@ const routes = [
     meta: { public: true }
   },
   {
-    // "/" redirects to the user's preferred primary dashboard
+    // "/" shows landing page with two services
     path: '/',
     name: 'Home',
-    redirect: () => {
-      const pref = localStorage.getItem(PREF_KEY) || 'risk'
-      return pref === 'matrix' ? '/matrix' : '/dashboard'
-    }
+    component: () => import('../views/LandingPage.vue')
   },
   {
-    path: '/dashboard',
+    path: '/risk-dashboard/register-dash',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue')
   },
@@ -30,7 +25,7 @@ const routes = [
     component: () => import('../views/RiskCategoryMatrix.vue')
   },
   {
-    path: '/risks',
+    path: '/risk-dashboard/risks',
     name: 'RiskList',
     component: () => import('../views/RiskList.vue')
   },
@@ -66,6 +61,32 @@ const routes = [
     name: 'AdminRoles',
     component: () => import('../views/admin/Roles.vue'),
     meta: { requiresSystemManager: true }
+  },
+  {
+    path: '/risk-dashboard/coi-dashboard',
+    name: 'COIDashboard',
+    component: () => import('../views/COIDashboard.vue'),
+    meta: { requiresAuditor: true }
+  },
+  {
+    path: '/my',
+    name: 'MyCOIDeclarations',
+    component: () => import('../views/MyCOIDeclarations.vue')
+  },
+  {
+    path: '/coi-declaration/create',
+    name: 'COIDeclarationCreate',
+    component: () => import('../views/COIDeclaration.vue')
+  },
+  {
+    path: '/coi-declaration/:id',
+    name: 'COIDeclarationView',
+    component: () => import('../views/COIDeclaration.vue')
+  },
+  {
+    path: '/coi-declarations',
+    name: 'COIDeclarations',
+    component: () => import('../views/COIDeclarationList.vue')
   }
 ]
 
@@ -89,25 +110,24 @@ router.beforeEach(async (to) => {
     return { name: 'Login', query: { redirect: to.fullPath } }
   }
 
-  // User is logged in but has no KRCS role — send back to Frappe login
-  if (!authStore.hasKrcsRole) {
-    window.location.href = '/login'
-    return false
-  }
-
   // Check System Manager requirement for admin routes (roles reference)
   if (to.meta.requiresSystemManager && !authStore.isSystemManager) {
-    return { name: 'Dashboard' }
+    return { name: 'Home' }
   }
 
   // Check department manager requirement (System Manager or KRCS HOD can manage units)
   if (to.meta.requiresDepartmentManager && !authStore.isSystemManager && !authStore.isHOD) {
-    return { name: 'Dashboard' }
+    return { name: 'Home' }
   }
 
   // Check user-manager requirement (System Manager, KRCS HOD, or KRCS PM)
   if (to.meta.requiresUserManager && !authStore.canManageUsers) {
-    return { name: 'Dashboard' }
+    return { name: 'Home' }
+  }
+
+  // Check auditor requirement (System Manager or KRCS Audit only)
+  if (to.meta.requiresAuditor && !authStore.isSystemManager && !authStore.isAudit) {
+    return { name: 'Home' }
   }
 
   return true
