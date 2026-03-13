@@ -28,7 +28,7 @@
           class="pb-3 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="$route.path === '/admin/roles' ? 'border-red-primary text-red-primary' : 'border-transparent text-medium-gray hover:text-charcoal hover:border-light-border'"
         >
-          Roles Reference
+          Roles
         </router-link>
       </nav>
     </div>
