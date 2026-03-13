@@ -79,43 +79,8 @@
       </div>
     </div>
 
-    <!-- Employee View - Only for non-reviewers -->
-    <div v-if="!canReview" class="bg-white rounded-lg shadow-sm border border-light-border p-8">
-      <div class="text-center max-w-2xl mx-auto">
-        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-        </div>
-        <h2 class="text-2xl font-bold text-charcoal mb-3">Submit Your Declaration</h2>
-        <p class="text-medium-gray mb-6">
-          As an employee, you can submit conflict of interest declarations. Click the "New Declaration" button above to get started.
-        </p>
-        <div class="bg-light-gray rounded-lg p-6 mb-6">
-          <h3 class="font-semibold text-charcoal mb-3">Your Declaration Statistics</h3>
-          <div class="grid grid-cols-3 gap-4">
-            <div>
-              <p class="text-2xl font-bold text-blue-600">{{ stats.my_declarations }}</p>
-              <p class="text-sm text-medium-gray">Total</p>
-            </div>
-            <div>
-              <p class="text-2xl font-bold text-orange-600">{{ stats.pending_submissions }}</p>
-              <p class="text-sm text-medium-gray">Pending</p>
-            </div>
-            <div>
-              <p class="text-2xl font-bold text-green-600">{{ stats.approved }}</p>
-              <p class="text-sm text-medium-gray">Approved</p>
-            </div>
-          </div>
-        </div>
-        <p class="text-sm text-medium-gray">
-          If you need to review declarations, please contact your system administrator about access permissions.
-        </p>
-      </div>
-    </div>
-
-    <!-- Tab Navigation - Only for Auditors/Reviewers -->
-    <div v-if="canReview" class="bg-white rounded-lg shadow-sm border border-light-border mb-6">
+    <!-- Tab Navigation - For Auditors/Reviewers Only -->
+    <div class="bg-white rounded-lg shadow-sm border border-light-border mb-6">
       <div class="border-b border-light-border">
         <nav class="flex space-x-8 px-6" aria-label="Tabs">
           <button
@@ -311,7 +276,7 @@ const filters = ref({
 })
 
 const canReview = computed(() => {
-  return authStore.isSystemManager || authStore.isHOD || authStore.isHOR || authStore.isAudit
+  return authStore.isSystemManager || authStore.isAudit
 })
 
 const filteredDeclarations = computed(() => {

@@ -68,6 +68,7 @@
                 Risk Register
               </router-link>
               <router-link
+                v-if="authStore.isSystemManager || authStore.isAudit"
                 to="/coi-dashboard"
                 class="nav-link"
                 :class="{ 'nav-link-active': $route.path.startsWith('/coi') }"

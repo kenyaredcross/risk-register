@@ -70,7 +70,8 @@ const routes = [
   {
     path: '/coi-dashboard',
     name: 'COIDashboard',
-    component: () => import('../views/COIDashboard.vue')
+    component: () => import('../views/COIDashboard.vue'),
+    meta: { requiresAuditor: true }
   },
   {
     path: '/coi-declaration/create',
@@ -122,6 +123,11 @@ router.beforeEach(async (to) => {
 
   // Check user-manager requirement (System Manager, KRCS HOD, or KRCS PM)
   if (to.meta.requiresUserManager && !authStore.canManageUsers) {
+    return { name: 'Dashboard' }
+  }
+
+  // Check auditor requirement (System Manager or KRCS Audit only)
+  if (to.meta.requiresAuditor && !authStore.isSystemManager && !authStore.isAudit) {
     return { name: 'Dashboard' }
   }
 
