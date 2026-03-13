@@ -114,17 +114,19 @@
    "label": "Financial Interests"
   },
   {
+   "description": "Do you or your immediate family members, close relatives, or friends have any financial interests, direct or indirect, in suppliers, contractors, sub-grantees, or other third-party contractors of the society?",
    "fieldname": "has_financial_interests",
    "fieldtype": "Select",
-   "label": "Do you or your immediate family members, close relatives, or friends have any financial interests, direct or indirect, in suppliers, contractors, sub-grantees, or other third-party contractors of the society?",
+   "label": "Financial Interests",
    "options": "No, neither myself nor my immediate family members, close relatives, or friends have any financial interests.\nYes, I and my immediate family members, close relatives, or friends have financial interests.",
    "reqd": 1
   },
   {
    "depends_on": "eval:doc.has_financial_interests && doc.has_financial_interests.startsWith('Yes')",
+   "description": "Describe the financial interests, direct or indirect, of suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
    "fieldname": "financial_interests_description",
    "fieldtype": "Small Text",
-   "label": "Describe the financial interests, direct or indirect, of suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
+   "label": "Financial Interests Description",
    "mandatory_depends_on": "eval:doc.has_financial_interests && doc.has_financial_interests.startsWith('Yes')"
   },
   {
@@ -134,17 +136,19 @@
    "label": "Personal Relationships"
   },
   {
+   "description": "Do you or your immediate family members, close relatives, or friends have any personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society?",
    "fieldname": "has_personal_relationships",
    "fieldtype": "Select",
-   "label": "Do you or your immediate family members, close relatives, or friends have any personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society?",
+   "label": "Personal Relationships",
    "options": "No, neither myself nor my immediate family members, close relatives, or friends have any personal relationships.\nYes, I and my immediate family members, close relatives, or friends have personal relationships.",
    "reqd": 1
   },
   {
    "depends_on": "eval:doc.has_personal_relationships && doc.has_personal_relationships.startsWith('Yes')",
+   "description": "Describe the personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
    "fieldname": "personal_relationships_description",
    "fieldtype": "Small Text",
-   "label": "Describe the personal relationships with suppliers, contractors, sub-grantees, or other third-party contractors of the Society.",
+   "label": "Personal Relationships Description",
    "mandatory_depends_on": "eval:doc.has_personal_relationships && doc.has_personal_relationships.startsWith('Yes')"
   },
   {
@@ -154,17 +158,19 @@
    "label": "Supervisory Roles"
   },
   {
+   "description": "Do you or your family members or relatives have supervisory roles in Kenya Red Cross Society over each other?",
    "fieldname": "has_supervisory_roles",
    "fieldtype": "Select",
-   "label": "Do you or your family members or relatives have supervisory roles in Kenya Red Cross Society over each other?",
+   "label": "Supervisory Roles Over Family",
    "options": "No, neither I nor my family members/relatives have supervisory roles in Kenya Red Cross Society over each other.\nYes, I and my family members or relatives have supervisory roles in Kenya Red Cross Society over each other.",
    "reqd": 1
   },
   {
    "depends_on": "eval:doc.has_supervisory_roles && doc.has_supervisory_roles.startsWith('Yes')",
+   "description": "Describe the supervisory roles at Kenya Red Cross Society that you or any of your family members or relatives have over each other.",
    "fieldname": "supervisory_roles_description",
    "fieldtype": "Small Text",
-   "label": "Describe the supervisory roles at Kenya Red Cross Society that you or any of your family members or relatives have over each other.",
+   "label": "Supervisory Roles Description",
    "mandatory_depends_on": "eval:doc.has_supervisory_roles && doc.has_supervisory_roles.startsWith('Yes')"
   },
   {
@@ -174,17 +180,19 @@
    "label": "Other Organizational Roles"
   },
   {
+   "description": "Do you hold any trusteeship, directorship, or employment roles in any other organization?",
    "fieldname": "has_other_roles",
    "fieldtype": "Select",
-   "label": "I do not hold any trusteeship, directorship, or employment roles in any other organization.",
+   "label": "Other Organizational Roles",
    "options": "No, I do not hold any trusteeship, directorship, or employment roles in any other organization.\nYes, I do hold trusteeship, directorship, or employment roles in other organizations.",
    "reqd": 1
   },
   {
    "depends_on": "eval:doc.has_other_roles && doc.has_other_roles.startsWith('Yes')",
+   "description": "Describe the trusteeship, directorship, or employment role you have in any other organization.",
    "fieldname": "other_roles_description",
    "fieldtype": "Small Text",
-   "label": "Describe the trusteeship, directorship, or employment role you have in any other organization.",
+   "label": "Other Roles Description",
    "mandatory_depends_on": "eval:doc.has_other_roles && doc.has_other_roles.startsWith('Yes')"
   },
   {
@@ -194,17 +202,19 @@
    "label": "Public Office"
   },
   {
+   "description": "Are you running for or plan to run for public office in the foreseeable future?",
    "fieldname": "plans_public_office",
    "fieldtype": "Select",
-   "label": "I am not running for or plan to run for public office in the foreseeable future.",
+   "label": "Public Office Plans",
    "options": "No, I am not running for or plan to run for public office in the foreseeable future.\nYes, I am running for or plan to run for public office in the foreseeable future.",
    "reqd": 1
   },
   {
    "depends_on": "eval:doc.plans_public_office && doc.plans_public_office.startsWith('Yes')",
+   "description": "Describe which public office you are running for or plan to run for in the foreseeable future.",
    "fieldname": "public_office_description",
    "fieldtype": "Small Text",
-   "label": "Describe which public office you are running for or plan to run for in the foreseeable future.",
+   "label": "Public Office Description",
    "mandatory_depends_on": "eval:doc.plans_public_office && doc.plans_public_office.startsWith('Yes')"
   },
   {
