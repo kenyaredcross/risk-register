@@ -20,8 +20,15 @@
           <!-- Navigation -->
           <div class="hidden md:flex items-center space-x-6">
             <nav class="flex space-x-6">
+              <router-link
+                to="/"
+                class="nav-link"
+                :class="{ 'nav-link-active': $route.path === '/' }"
+              >
+                Home
+              </router-link>
               <!-- Dashboard dropdown -->
-              <div class="relative" ref="dashboardDropdownRef">
+              <div v-if="hasRiskAccess" class="relative" ref="dashboardDropdownRef">
                 <button
                   type="button"
                   class="nav-link flex items-center gap-1"
@@ -39,12 +46,12 @@
                   class="absolute left-0 top-full mt-1 w-48 bg-white rounded-lg shadow-elegant border border-light-border py-1 z-50"
                 >
                   <button
-                    @click="switchDashboard('/dashboard')"
+                    @click="switchDashboard('/risk-dashboard/register-dash')"
                     class="w-full text-left px-4 py-2.5 text-sm hover:bg-light-gray transition-colors flex items-center justify-between"
-                    :class="$route.path === '/dashboard' ? 'text-red-primary font-semibold' : 'text-charcoal'"
+                    :class="$route.path === '/risk-dashboard/register-dash' ? 'text-red-primary font-semibold' : 'text-charcoal'"
                   >
                     Risk Dashboard
-                    <svg v-if="$route.path === '/dashboard'" class="w-3.5 h-3.5 text-red-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <svg v-if="$route.path === '/risk-dashboard/register-dash'" class="w-3.5 h-3.5 text-red-primary" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                   </button>
@@ -61,19 +68,28 @@
                 </div>
               </div>
               <router-link
-                to="/risks"
+                v-if="hasRiskAccess"
+                to="/risk-dashboard/risks"
                 class="nav-link"
-                :class="{ 'nav-link-active': $route.path === '/risks' }"
+                :class="{ 'nav-link-active': $route.path === '/risk-dashboard/risks' }"
               >
                 Risk Register
               </router-link>
               <router-link
                 v-if="authStore.isSystemManager || authStore.isAudit"
-                to="/coi-dashboard"
+                to="/risk-dashboard/coi-dashboard"
                 class="nav-link"
-                :class="{ 'nav-link-active': $route.path.startsWith('/coi') }"
+                :class="{ 'nav-link-active': $route.path.startsWith('/risk-dashboard/coi') }"
               >
-                COI Declarations
+                COI Dashboard
+              </router-link>
+              <router-link
+                v-else
+                to="/my"
+                class="nav-link"
+                :class="{ 'nav-link-active': $route.path === '/my' }"
+              >
+                My COI
               </router-link>
               <!-- System Manager → full Admin (starts at Departments) -->
               <router-link
@@ -104,8 +120,9 @@
               </router-link>
             </nav>
 
-            <!-- Add Risk Button -->
+            <!-- Add Risk Button (only for users with risk access) -->
             <router-link
+              v-if="hasRiskAccess"
               to="/risk/create"
               class="flex items-center space-x-1 bg-red-primary hover:bg-red-dark text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
               title="Add New Risk"
@@ -152,17 +169,26 @@
               <div class="text-xs text-medium-gray">{{ authStore.user }}</div>
             </div>
           </div>
-          <div class="py-1">
+          <router-link to="/" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+            Home
+          </router-link>
+          <div v-if="hasRiskAccess" class="py-1">
             <p class="text-xs font-semibold text-medium-gray uppercase tracking-wide mb-1">Dashboards</p>
-            <router-link to="/dashboard" class="block py-1.5 pl-3 text-charcoal hover:text-red-primary" :class="{ 'text-red-primary font-semibold': $route.path === '/dashboard' }" @click="mobileMenuOpen = false">
+            <router-link to="/risk-dashboard/register-dash" class="block py-1.5 pl-3 text-charcoal hover:text-red-primary" :class="{ 'text-red-primary font-semibold': $route.path === '/risk-dashboard/register-dash' }" @click="mobileMenuOpen = false">
               Risk Dashboard
             </router-link>
             <router-link to="/matrix" class="block py-1.5 pl-3 text-charcoal hover:text-red-primary" :class="{ 'text-red-primary font-semibold': $route.path === '/matrix' }" @click="mobileMenuOpen = false">
               Category Matrix
             </router-link>
           </div>
-          <router-link to="/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+          <router-link v-if="hasRiskAccess" to="/risk-dashboard/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Risk Register
+          </router-link>
+          <router-link v-if="authStore.isSystemManager || authStore.isAudit" to="/risk-dashboard/coi-dashboard" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+            COI Dashboard
+          </router-link>
+          <router-link v-else to="/my" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
+            My COI
           </router-link>
           <router-link v-if="authStore.isSystemManager || authStore.isHOD" to="/admin/departments" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Admin
@@ -171,6 +197,7 @@
             Users
           </router-link>
           <router-link
+            v-if="hasRiskAccess"
             to="/risk/create"
             class="flex items-center space-x-2 bg-red-primary hover:bg-red-dark text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium mt-2"
             @click="mobileMenuOpen = false"
@@ -229,7 +256,15 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isLoginPage = computed(() => route.name === 'Login')
-const isDashboardActive = computed(() => route.path === '/dashboard' || route.path === '/matrix')
+const isDashboardActive = computed(() => route.path === '/risk-dashboard/register-dash' || route.path === '/matrix')
+
+// Check if user has any KRCS risk role
+const hasRiskAccess = computed(() => {
+  const riskRoles = ['KRCS HOR', 'KRCS DSG', 'KRCS HOD', 'KRCS Project Manager',
+                     'KRCS RPC', 'KRCS Finance Officer', 'KRCS Procurement Manager',
+                     'KRCS Logistics Manager', 'KRCS HR Manager', 'System Manager']
+  return authStore.roles.some(role => riskRoles.includes(role))
+})
 
 const switchDashboard = (target) => {
   dashboardDropdownOpen.value = false

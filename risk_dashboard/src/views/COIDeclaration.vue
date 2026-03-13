@@ -8,7 +8,12 @@
 
     <!-- Form Card -->
     <div class="bg-white rounded-lg shadow-elegant p-6 md:p-8 max-w-4xl mx-auto">
-      <form @submit.prevent="handleSubmit">
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-8">
+        <p class="text-medium-gray">Loading declaration...</p>
+      </div>
+
+      <form v-else @submit.prevent="handleSubmit">
 
         <!-- Basic Information -->
         <div class="mb-8">
@@ -20,6 +25,28 @@
               <label class="block text-sm font-medium text-charcoal mb-2">Employee Name</label>
               <input
                 v-model="form.employee_name"
+                type="text"
+                readonly
+                class="input bg-gray-50 cursor-not-allowed"
+              />
+            </div>
+
+            <!-- Employee Number (readonly, auto-filled) -->
+            <div>
+              <label class="block text-sm font-medium text-charcoal mb-2">Employee Number</label>
+              <input
+                v-model="form.employee_number"
+                type="text"
+                readonly
+                class="input bg-gray-50 cursor-not-allowed"
+              />
+            </div>
+
+            <!-- Designation (readonly, auto-filled) -->
+            <div>
+              <label class="block text-sm font-medium text-charcoal mb-2">Designation</label>
+              <input
+                v-model="form.designation"
                 type="text"
                 readonly
                 class="input bg-gray-50 cursor-not-allowed"
@@ -290,6 +317,41 @@
           </div>
         </div>
 
+        <!-- Terms and Conditions -->
+        <div class="mb-8 pb-8 border-b border-light-border">
+          <h3 class="text-lg font-semibold text-charcoal mb-4">Declaration & Acknowledgment</h3>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <p class="text-sm text-charcoal mb-3 font-medium">By submitting this declaration, I acknowledge and confirm that:</p>
+            <ul class="space-y-2 text-sm text-charcoal ml-4">
+              <li class="flex items-start">
+                <span class="font-semibold mr-2">a)</span>
+                <span>I have read, understood and will comply with Society's Conflict of Interest Policy.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="font-semibold mr-2">b)</span>
+                <span>I understand that failure to disclose any actual or potential conflict of interest will result in disciplinary action.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="font-semibold mr-2">c)</span>
+                <span>I will constantly evaluate my conflict status and should any of my responses above change in any way, I shall immediately update the declaration and provide all information as may be necessary for the conflict or potential conflict to be evaluated.</span>
+              </li>
+            </ul>
+          </div>
+
+          <label class="flex items-start cursor-pointer">
+            <input
+              v-model="form.terms_accepted"
+              type="checkbox"
+              required
+              class="mt-1 mr-3 h-4 w-4 text-red-primary focus:ring-red-primary border-gray-300 rounded"
+            />
+            <span class="text-sm text-charcoal">
+              I have read and agree to the above statements <span class="text-red-primary">*</span>
+            </span>
+          </label>
+        </div>
+
         <!-- Error Message -->
         <div v-if="errorMessage" class="mb-6 p-4 bg-red-light rounded-lg">
           <p class="text-sm text-red-dark">{{ errorMessage }}</p>
@@ -300,8 +362,8 @@
           <p class="text-sm text-green-700">{{ successMessage }}</p>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-light-border">
+        <!-- Action Buttons (hidden in view mode) -->
+        <div v-if="!isViewMode" class="flex items-center justify-end space-x-4 pt-6 border-t border-light-border">
           <button
             type="button"
             @click="saveDraft"
@@ -313,12 +375,23 @@
           </button>
           <button
             type="submit"
-            :disabled="saving"
+            :disabled="saving || !form.terms_accepted"
             class="btn btn-primary"
+            :class="{ 'opacity-50 cursor-not-allowed': !form.terms_accepted }"
           >
             <span v-if="saving && submitting">Submitting...</span>
             <span v-else>Submit Declaration</span>
           </button>
+        </div>
+
+        <!-- View Mode Message -->
+        <div v-else class="pt-6 border-t border-light-border">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p class="text-sm text-charcoal">
+              <strong>Status:</strong> {{ declarationStatus }}
+              <span class="block mt-2 text-medium-gray">This declaration has been submitted and cannot be edited.</span>
+            </p>
+          </div>
         </div>
       </form>
     </div>
@@ -336,6 +409,7 @@ const router = useRouter()
 const form = ref({
   employee: '',
   employee_name: '',
+  employee_number: '',
   department: '',
   designation: '',
   declaration_type: '',
@@ -349,11 +423,15 @@ const form = ref({
   has_other_roles: '',
   other_roles_description: '',
   plans_public_office: '',
-  public_office_description: ''
+  public_office_description: '',
+  terms_accepted: false
 })
 
 const saving = ref(false)
 const submitting = ref(false)
+const loading = ref(false)
+const isViewMode = ref(false)
+const declarationStatus = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
 
@@ -396,6 +474,7 @@ const loadEmployeeData = async () => {
       const employee = response.data.message
       form.value.employee = employee.name
       form.value.employee_name = employee.employee_name
+      form.value.employee_number = employee.employee_number || ''
       form.value.department = employee.department
       form.value.designation = employee.designation
     } else {
@@ -441,7 +520,7 @@ const saveDraft = async () => {
     if (response.data.message.success) {
       successMessage.value = 'Draft saved successfully!'
       setTimeout(() => {
-        router.push('/coi-declarations')
+        router.push('/my')
       }, 1500)
     }
   } catch (error) {
@@ -454,6 +533,12 @@ const saveDraft = async () => {
 
 // Submit declaration
 const handleSubmit = async () => {
+  // Validate terms acceptance
+  if (!form.value.terms_accepted) {
+    errorMessage.value = 'You must read and agree to the declaration statements before submitting.'
+    return
+  }
+
   saving.value = true
   submitting.value = true
   errorMessage.value = ''
@@ -486,7 +571,7 @@ const handleSubmit = async () => {
     if (response.data.message.success) {
       successMessage.value = 'Declaration submitted successfully!'
       setTimeout(() => {
-        router.push('/coi-declarations')
+        router.push('/my')
       }, 1500)
     }
   } catch (error) {
@@ -498,8 +583,58 @@ const handleSubmit = async () => {
   }
 }
 
+// Load declaration data if viewing/editing existing declaration
+const loadDeclaration = async (declarationId) => {
+  try {
+    loading.value = true
+    const response = await axios.get(
+      `/api/method/krcs_risk.krcs_risk_management.doctype.conflict_of_interest_declaration.api.get_declaration?name=${declarationId}`
+    )
+
+    if (response.data.message) {
+      const declaration = response.data.message
+
+      // Set view mode and status
+      declarationStatus.value = declaration.status
+      isViewMode.value = declaration.status !== 'Draft'
+
+      // Populate form with declaration data
+      form.value.employee = declaration.employee
+      form.value.employee_name = declaration.employee_name
+      form.value.employee_number = declaration.employee_number || ''
+      form.value.department = declaration.department
+      form.value.designation = declaration.designation
+      form.value.declaration_type = declaration.declaration_type
+      form.value.declaration_date = declaration.declaration_date
+      form.value.has_financial_interests = declaration.has_financial_interests
+      form.value.financial_interests_description = declaration.financial_interests_description || ''
+      form.value.has_personal_relationships = declaration.has_personal_relationships
+      form.value.personal_relationships_description = declaration.personal_relationships_description || ''
+      form.value.has_supervisory_roles = declaration.has_supervisory_roles
+      form.value.supervisory_roles_description = declaration.supervisory_roles_description || ''
+      form.value.has_other_roles = declaration.has_other_roles
+      form.value.other_roles_description = declaration.other_roles_description || ''
+      form.value.plans_public_office = declaration.plans_public_office
+      form.value.public_office_description = declaration.public_office_description || ''
+    }
+  } catch (error) {
+    console.error('Error loading declaration:', error)
+    errorMessage.value = 'Failed to load declaration data'
+  } finally {
+    loading.value = false
+  }
+}
+
 // Load employee data on mount
-onMounted(() => {
-  loadEmployeeData()
+onMounted(async () => {
+  const declarationId = router.currentRoute.value.params.id
+
+  if (declarationId) {
+    // Loading existing declaration
+    await loadDeclaration(declarationId)
+  } else {
+    // Creating new declaration
+    await loadEmployeeData()
+  }
 })
 </script>

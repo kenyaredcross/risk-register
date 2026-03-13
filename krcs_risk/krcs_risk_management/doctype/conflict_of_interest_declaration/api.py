@@ -171,7 +171,7 @@ def get_user_employee():
 	employee = frappe.db.get_value(
 		"Employee",
 		{"user_id": user, "status": "Active"},
-		["name", "employee_name", "department", "designation", "user_id"],
+		["name", "employee_name", "employee_number", "department", "designation", "user_id"],
 		as_dict=True
 	)
 
@@ -268,5 +268,45 @@ def get_all_declarations(filters=None):
 		],
 		order_by="declaration_date desc, modified desc"
 	)
+
+	return declarations
+
+
+@frappe.whitelist()
+def get_my_declarations():
+	"""
+	Get declarations for the current user's employee record only
+	"""
+	user = frappe.session.user
+
+	# Get employee for current user with employee_number
+	employee_data = frappe.db.get_value(
+		"Employee",
+		{"user_id": user},
+		["name", "employee_number"],
+		as_dict=True
+	)
+
+	if not employee_data:
+		return []
+
+	employee = employee_data.get("name")
+	employee_number = employee_data.get("employee_number") or ""
+
+	# Get declarations for this employee
+	declarations = frappe.get_all(
+		"Conflict of Interest Declaration",
+		filters={"employee": employee},
+		fields=[
+			"name", "employee", "employee_name", "department", "designation",
+			"declaration_type", "declaration_date", "status", "submitted_date",
+			"reviewed_by", "review_date", "review_comments", "creation", "modified"
+		],
+		order_by="creation desc"
+	)
+
+	# Add employee_number to each declaration
+	for declaration in declarations:
+		declaration["employee_number"] = employee_number
 
 	return declarations

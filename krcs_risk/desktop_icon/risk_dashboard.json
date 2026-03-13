@@ -8,15 +8,49 @@
  "icon_type": "App",
  "idx": 0,
  "label": "Risk Dashboard",
- "link": "/risk-dashboard",
+ "link": "/risk-dashboard#/risk-dashboard/register-dash",
  "link_type": "External",
  "logo_url": "/assets/krcs_risk/logo.png",
- "modified": "2026-03-12 15:03:41.112785",
+ "modified": "2026-03-13 11:35:33.865944",
  "modified_by": "Administrator",
  "name": "Risk Dashboard",
  "owner": "Administrator",
- "parent_icon": "Risk Mngt",
+ "parent_icon": "Risk Mgt",
  "restrict_removal": 0,
- "roles": [],
+ "roles": [
+  {
+   "role": "KRCS Audit"
+  },
+  {
+   "role": "KRCS DSG"
+  },
+  {
+   "role": "KRCS Finance Officer"
+  },
+  {
+   "role": "KRCS HOD"
+  },
+  {
+   "role": "KRCS HOR"
+  },
+  {
+   "role": "KRCS HR Manager"
+  },
+  {
+   "role": "KRCS Project Manager"
+  },
+  {
+   "role": "KRCS RPC"
+  },
+  {
+   "role": "KRCS Logistics Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
  "standard": 1
 }

@@ -1,0 +1,22 @@
+{
+ "app": "krcs_risk",
+ "bg_color": "blue",
+ "creation": "2026-03-13 09:48:55.073516",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_image": "/files/conflict-of-interest.png",
+ "icon_type": "App",
+ "idx": 0,
+ "label": "COI Declaration",
+ "link": "/risk-dashboard#/risk-dashboard/coi-dashboard",
+ "link_type": "External",
+ "modified": "2026-03-13 11:32:14.578540",
+ "modified_by": "Administrator",
+ "name": "COI Declaration",
+ "owner": "Administrator",
+ "parent_icon": "Risk Mgt",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}
