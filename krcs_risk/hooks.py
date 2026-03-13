@@ -73,14 +73,10 @@ add_to_apps_screen = [
 # Fixtures
 # --------
 fixtures = [
-    {"dt": "Custom Field", "filters": [["name", "=", "User-krcs_department"]]},
-    {"dt": "Custom DocPerm", "filters": [["parent", "in", ["Project", "Region", "Program Risk Register"]], ["role", "like", "KRCS %"]]},
-    {"dt": "Region"},
-    {"dt": "Role", "filters": [["role_name", "like", "KRCS %"]]},
-    {"dt": "Workflow", "filters": [["name", "=", "Program Risk Register Workflow"]]},
-    {"dt": "Workspace", "filters": [["name", "=", "KRCS Risk Management"]]},
-    {"dt": "Workspace Sidebar", "filters": [["name", "=", "KRCS Risk Management"]]},
-    {"dt": "Desktop Icon", "filters": [["name", "in", ["Risk Management", "Risk Dashboard", "KRCS Risk Management"]]]},
+    "Custom Field",
+    "Role",
+    "Custom DocPerm",
+    "Region"
 ]
 
 # Website Route Rules

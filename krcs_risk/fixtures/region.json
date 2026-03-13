@@ -1,0 +1,74 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.543439",
+  "name": "Coast",
+  "region_abbreviation": "COR",
+  "region_name": "Coast"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.554828",
+  "name": "North Eastern",
+  "region_abbreviation": "NER",
+  "region_name": "North Eastern"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.563602",
+  "name": "Lower Eastern",
+  "region_abbreviation": "LER",
+  "region_name": "Lower Eastern"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.571985",
+  "name": "Central",
+  "region_abbreviation": "CER",
+  "region_name": "Central"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.579763",
+  "name": "Upper Eastern",
+  "region_abbreviation": "UER",
+  "region_name": "Upper Eastern"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.589430",
+  "name": "South Rift",
+  "region_abbreviation": "SRR",
+  "region_name": "South Rift"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.600231",
+  "name": "North Rift",
+  "region_abbreviation": "NRR",
+  "region_name": "North Rift"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.609973",
+  "name": "West Kenya",
+  "region_abbreviation": "WKR",
+  "region_name": "West Kenya"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Region",
+  "modified": "2026-03-12 16:51:48.620992",
+  "name": "Nation Wide",
+  "region_abbreviation": "NWR",
+  "region_name": "Nation Wide"
+ }
+]
