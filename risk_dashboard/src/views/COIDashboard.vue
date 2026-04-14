@@ -7,15 +7,31 @@
           <h1 class="text-3xl font-bold text-charcoal mb-2">Conflict of Interest Declarations</h1>
           <p class="text-medium-gray">Manage and review conflict of interest declarations for KRCS employees</p>
         </div>
-        <router-link
-          to="/coi-declaration/create"
-          class="flex items-center space-x-2 bg-red-primary hover:bg-red-dark text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          <span>New Declaration</span>
-        </router-link>
+        <div class="flex items-center gap-3">
+          <a
+            href="/app/conflict-of-interest-declaration"
+            target="_blank"
+            class="flex items-center space-x-2 bg-white hover:bg-gray-50 text-charcoal border border-light-border px-6 py-3 rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
+            title="View all declarations in Desk"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            <span>View in Desk</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+          <router-link
+            to="/coi-declaration/create"
+            class="flex items-center space-x-2 bg-red-primary hover:bg-red-dark text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>New Declaration</span>
+          </router-link>
+        </div>
       </div>
     </div>
 
@@ -181,7 +197,7 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-light-border">
-              <tr v-for="declaration in filteredDeclarations" :key="declaration.name" class="hover:bg-light-gray transition-colors">
+              <tr v-for="declaration in paginatedDeclarations" :key="declaration.name" class="hover:bg-light-gray transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-charcoal">{{ declaration.employee_name }}</div>
                   <div class="text-sm text-medium-gray">{{ declaration.employee }}</div>
@@ -195,16 +211,68 @@
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    @click="viewDeclaration(declaration)"
-                    class="text-red-primary hover:text-red-dark"
-                  >
-                    View Details
-                  </button>
+                  <div class="flex items-center justify-end gap-3">
+                    <button
+                      @click="viewDeclaration(declaration)"
+                      class="text-red-primary hover:text-red-dark"
+                    >
+                      View Details
+                    </button>
+                    <span class="text-medium-gray">|</span>
+                    <a
+                      :href="`/app/conflict-of-interest-declaration/${declaration.name}`"
+                      target="_blank"
+                      class="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
+                      title="Open in Desk"
+                    >
+                      Desk
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="filteredDeclarations.length > 0" class="px-6 py-4 border-t border-light-border flex items-center justify-between">
+          <div class="text-sm text-medium-gray">
+            Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ totalDeclarations }} declarations
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              @click="currentPage--"
+              :disabled="currentPage === 1"
+              class="px-3 py-2 border border-light-border rounded-lg text-sm font-medium hover:bg-light-gray disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Previous
+            </button>
+            <div class="flex items-center gap-1">
+              <button
+                v-for="page in visiblePages"
+                :key="page"
+                @click="currentPage = page"
+                :class="[
+                  'px-3 py-2 border rounded-lg text-sm font-medium transition-colors',
+                  currentPage === page
+                    ? 'bg-red-primary text-white border-red-primary'
+                    : 'border-light-border hover:bg-light-gray'
+                ]"
+              >
+                {{ page }}
+              </button>
+            </div>
+            <button
+              @click="currentPage++"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-2 border border-light-border rounded-lg text-sm font-medium hover:bg-light-gray disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -269,11 +337,15 @@ const stats = ref({
 
 const declarations = ref([])
 const selectedDeclaration = ref(null)
-const activeTab = ref('my')
+const activeTab = ref('all')
 const filters = ref({
   status: '',
   declaration_type: ''
 })
+
+// Pagination
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
 
 const canReview = computed(() => {
   return authStore.isSystemManager || authStore.isAudit
@@ -291,6 +363,36 @@ const filteredDeclarations = computed(() => {
   }
 
   return filtered
+})
+
+const totalDeclarations = computed(() => filteredDeclarations.value.length)
+const totalPages = computed(() => Math.ceil(totalDeclarations.value / itemsPerPage.value))
+
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
+const endIndex = computed(() => {
+  const end = startIndex.value + itemsPerPage.value
+  return end > totalDeclarations.value ? totalDeclarations.value : end
+})
+
+const paginatedDeclarations = computed(() => {
+  return filteredDeclarations.value.slice(startIndex.value, endIndex.value)
+})
+
+const visiblePages = computed(() => {
+  const pages = []
+  const maxVisible = 5
+  let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2))
+  let end = Math.min(totalPages.value, start + maxVisible - 1)
+
+  if (end - start + 1 < maxVisible) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+
+  return pages
 })
 
 const getStatusClass = (status) => {

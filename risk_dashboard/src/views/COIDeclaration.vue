@@ -6,6 +6,52 @@
       <p class="text-medium-gray">Submit your annual declaration or report a change in circumstances</p>
     </div>
 
+    <!-- Mandatory Declaration Notice -->
+    <div class="bg-amber-50 rounded-lg p-6 mb-6 max-w-4xl mx-auto">
+      <h2 class="text-lg font-semibold text-charcoal mb-3">Mandatory Declaration</h2>
+      <p class="text-sm text-charcoal mb-3">This is a mandatory declaration to be made by all staff members:</p>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-charcoal mb-4 ml-2">
+        <li>At the beginning of every calendar year.</li>
+        <li>Whenever there is a change in circumstance of the staff member that necessitates a declaration.</li>
+      </ol>
+
+      <div class="mt-4 pt-4 border-t border-amber-200">
+        <h3 class="text-sm font-semibold text-charcoal mb-2">Confidentiality of Information</h3>
+        <p class="text-sm text-charcoal mb-4">
+          The data and information you provide in this form and throughout the process of evaluating and resolving any potential or actual conflicts shall be handled confidentially as per our Data Privacy Policy and the Data Protection Act 2019.
+        </p>
+        <p class="text-sm text-charcoal">
+          All conflicts shall be evaluated by the Office of the Secretary General.
+        </p>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-amber-200">
+        <h3 class="text-sm font-semibold text-charcoal mb-2">Policy References</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a
+              href="https://shorturl.at/hDQ03"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-red-primary hover:text-red-dark underline font-medium"
+            >
+              Link to the Conflict-of-Interest Policy 2024
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://shorturl.at/bPVZ0"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-red-primary hover:text-red-dark underline font-medium"
+            >
+              Additional guidance for Conflict-of-Interest Policy 2024 (Definitions and interpretations)
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <!-- Form Card -->
     <div class="bg-white rounded-lg shadow-elegant p-6 md:p-8 max-w-4xl mx-auto">
       <!-- Loading State -->

@@ -2,7 +2,7 @@
   <div id="app" class="min-h-screen bg-off-white">
     <!-- Header — hidden on login page -->
     <header v-if="!isLoginPage" class="bg-white shadow-elegant sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4">
           <!-- Logo & Title -->
           <div class="flex items-center space-x-4">
