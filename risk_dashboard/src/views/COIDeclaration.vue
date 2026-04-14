@@ -66,47 +66,51 @@
           <h2 class="text-xl font-semibold text-charcoal mb-4">Basic Information</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Employee Name (readonly, auto-filled) -->
+            <!-- Employee Name -->
             <div>
-              <label class="block text-sm font-medium text-charcoal mb-2">Employee Name</label>
+              <label class="block text-sm font-medium text-charcoal mb-2">Employee Name *</label>
               <input
                 v-model="form.employee_name"
                 type="text"
-                readonly
-                class="input bg-gray-50 cursor-not-allowed"
+                required
+                class="input"
+                placeholder="Enter your full name"
               />
             </div>
 
-            <!-- Employee Number (readonly, auto-filled) -->
+            <!-- Employee Number -->
             <div>
-              <label class="block text-sm font-medium text-charcoal mb-2">Employee Number</label>
+              <label class="block text-sm font-medium text-charcoal mb-2">Employee Number *</label>
               <input
                 v-model="form.employee_number"
                 type="text"
-                readonly
-                class="input bg-gray-50 cursor-not-allowed"
+                required
+                class="input"
+                placeholder="Enter your employee number"
               />
             </div>
 
-            <!-- Designation (readonly, auto-filled) -->
+            <!-- Department -->
             <div>
-              <label class="block text-sm font-medium text-charcoal mb-2">Designation</label>
-              <input
-                v-model="form.designation"
-                type="text"
-                readonly
-                class="input bg-gray-50 cursor-not-allowed"
-              />
-            </div>
-
-            <!-- Department (readonly, auto-filled) -->
-            <div>
-              <label class="block text-sm font-medium text-charcoal mb-2">Department</label>
+              <label class="block text-sm font-medium text-charcoal mb-2">Department *</label>
               <input
                 v-model="form.department"
                 type="text"
-                readonly
-                class="input bg-gray-50 cursor-not-allowed"
+                required
+                class="input"
+                placeholder="Enter your department"
+              />
+            </div>
+
+            <!-- Designation -->
+            <div>
+              <label class="block text-sm font-medium text-charcoal mb-2">Designation *</label>
+              <input
+                v-model="form.designation"
+                type="text"
+                required
+                class="input"
+                placeholder="Enter your job title/designation"
               />
             </div>
 
@@ -453,7 +457,6 @@ const router = useRouter()
 
 // Form data
 const form = ref({
-  employee: '',
   employee_name: '',
   employee_number: '',
   department: '',
@@ -511,26 +514,7 @@ function getTodayDate() {
   return `${year}-${month}-${day}`
 }
 
-// Load user's employee data
-const loadEmployeeData = async () => {
-  try {
-    const response = await axios.get('/api/method/krcs_risk.krcs_risk_management.doctype.conflict_of_interest_declaration.api.get_user_employee')
-
-    if (response.data.message) {
-      const employee = response.data.message
-      form.value.employee = employee.name
-      form.value.employee_name = employee.employee_name
-      form.value.employee_number = employee.employee_number || ''
-      form.value.department = employee.department
-      form.value.designation = employee.designation
-    } else {
-      errorMessage.value = 'No employee record found for your user account. Please contact your administrator.'
-    }
-  } catch (error) {
-    console.error('Error loading employee data:', error)
-    errorMessage.value = 'Failed to load employee information'
-  }
-}
+// No need to load employee data - users will fill it manually
 
 // Save as draft
 const saveDraft = async () => {
@@ -541,7 +525,10 @@ const saveDraft = async () => {
 
   try {
     const data = {
-      employee: form.value.employee,
+      employee_name: form.value.employee_name,
+      employee_number: form.value.employee_number,
+      department: form.value.department,
+      designation: form.value.designation,
       declaration_type: form.value.declaration_type,
       declaration_date: form.value.declaration_date,
       has_financial_interests: form.value.has_financial_interests,
@@ -592,7 +579,10 @@ const handleSubmit = async () => {
 
   try {
     const data = {
-      employee: form.value.employee,
+      employee_name: form.value.employee_name,
+      employee_number: form.value.employee_number,
+      department: form.value.department,
+      designation: form.value.designation,
       declaration_type: form.value.declaration_type,
       declaration_date: form.value.declaration_date,
       has_financial_interests: form.value.has_financial_interests,
@@ -645,7 +635,6 @@ const loadDeclaration = async (declarationId) => {
       isViewMode.value = declaration.status !== 'Draft'
 
       // Populate form with declaration data
-      form.value.employee = declaration.employee
       form.value.employee_name = declaration.employee_name
       form.value.employee_number = declaration.employee_number || ''
       form.value.department = declaration.department
@@ -671,16 +660,14 @@ const loadDeclaration = async (declarationId) => {
   }
 }
 
-// Load employee data on mount
+// Load declaration data on mount if editing
 onMounted(async () => {
   const declarationId = router.currentRoute.value.params.id
 
   if (declarationId) {
     // Loading existing declaration
     await loadDeclaration(declarationId)
-  } else {
-    // Creating new declaration
-    await loadEmployeeData()
   }
+  // For new declarations, form fields are empty and user fills them manually
 })
 </script>

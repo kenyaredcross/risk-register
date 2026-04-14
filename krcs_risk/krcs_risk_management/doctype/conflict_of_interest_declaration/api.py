@@ -31,8 +31,13 @@ def create_declaration(data):
 	# Create new document
 	doc = frappe.new_doc("Conflict of Interest Declaration")
 
-	# Set fields from data
-	doc.employee = data.get("employee")
+	# Set employee fields from data
+	doc.employee_name = data.get("employee_name")
+	doc.employee_number = data.get("employee_number")
+	doc.department = data.get("department")
+	doc.designation = data.get("designation")
+
+	# Set declaration info
 	doc.declaration_type = data.get("declaration_type")
 	doc.declaration_date = data.get("declaration_date")
 
@@ -97,7 +102,17 @@ def update_declaration(name, data):
 	if not frappe.has_permission("Conflict of Interest Declaration", "write", doc=doc):
 		frappe.throw("You do not have permission to update this declaration")
 
-	# Update fields
+	# Update employee fields
+	if "employee_name" in data:
+		doc.employee_name = data["employee_name"]
+	if "employee_number" in data:
+		doc.employee_number = data["employee_number"]
+	if "department" in data:
+		doc.department = data["department"]
+	if "designation" in data:
+		doc.designation = data["designation"]
+
+	# Update declaration fields
 	if "declaration_type" in data:
 		doc.declaration_type = data["declaration_type"]
 

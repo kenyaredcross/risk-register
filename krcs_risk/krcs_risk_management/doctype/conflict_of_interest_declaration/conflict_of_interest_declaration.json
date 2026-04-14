@@ -1,18 +1,18 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:COI-{employee}-{YYYY}-{####}",
+ "autoname": "format:COI-{YYYY}-{####}",
  "creation": "2026-03-12 00:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "basic_information_section",
-  "employee",
   "employee_name",
-  "user_id",
+  "employee_number",
   "column_break_basic",
   "department",
   "designation",
+  "section_break_declaration_info",
   "declaration_type",
   "declaration_date",
   "section_break_financial",
@@ -49,48 +49,38 @@
    "label": "Basic Information"
   },
   {
-   "fieldname": "employee",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Employee",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Employee Name",
-   "read_only": 1
+   "reqd": 1
   },
   {
-   "fetch_from": "employee.user_id",
-   "fieldname": "user_id",
-   "fieldtype": "Link",
-   "label": "User ID",
-   "options": "User",
-   "read_only": 1
+   "fieldname": "employee_number",
+   "fieldtype": "Data",
+   "label": "Employee Number",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_basic",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "employee.department",
    "fieldname": "department",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Department",
-   "options": "Department",
-   "read_only": 1
+   "reqd": 1
   },
   {
-   "fetch_from": "employee.designation",
    "fieldname": "designation",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Designation",
-   "options": "Designation",
-   "read_only": 1
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_declaration_info",
+   "fieldtype": "Section Break",
+   "label": "Declaration Information"
   },
   {
    "fieldname": "declaration_type",
