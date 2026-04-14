@@ -9,6 +9,7 @@
   "basic_information_section",
   "employee_name",
   "employee_number",
+  "email",
   "column_break_basic",
   "department",
   "designation",
@@ -59,6 +60,13 @@
    "fieldname": "employee_number",
    "fieldtype": "Data",
    "label": "Employee Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email",
    "reqd": 1
   },
   {

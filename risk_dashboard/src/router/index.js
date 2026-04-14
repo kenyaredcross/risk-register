@@ -12,7 +12,8 @@ const routes = [
     // "/" shows landing page with two services
     path: '/',
     name: 'Home',
-    component: () => import('../views/LandingPage.vue')
+    component: () => import('../views/LandingPage.vue'),
+    meta: { public: true }
   },
   {
     path: '/risk-dashboard/register-dash',
@@ -76,7 +77,8 @@ const routes = [
   {
     path: '/coi-declaration/create',
     name: 'COIDeclarationCreate',
-    component: () => import('../views/COIDeclaration.vue')
+    component: () => import('../views/COIDeclaration.vue'),
+    meta: { public: true }
   },
   {
     path: '/coi-declaration/:id',

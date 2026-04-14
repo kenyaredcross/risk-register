@@ -90,6 +90,18 @@
               />
             </div>
 
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-charcoal mb-2">Email *</label>
+              <input
+                v-model="form.email"
+                type="email"
+                required
+                class="input"
+                placeholder="Enter your email address"
+              />
+            </div>
+
             <!-- Department -->
             <div>
               <label class="block text-sm font-medium text-charcoal mb-2">Department *</label>
@@ -459,6 +471,7 @@ const router = useRouter()
 const form = ref({
   employee_name: '',
   employee_number: '',
+  email: '',
   department: '',
   designation: '',
   declaration_type: '',
@@ -527,6 +540,7 @@ const saveDraft = async () => {
     const data = {
       employee_name: form.value.employee_name,
       employee_number: form.value.employee_number,
+      email: form.value.email,
       department: form.value.department,
       designation: form.value.designation,
       declaration_type: form.value.declaration_type,
@@ -581,6 +595,7 @@ const handleSubmit = async () => {
     const data = {
       employee_name: form.value.employee_name,
       employee_number: form.value.employee_number,
+      email: form.value.email,
       department: form.value.department,
       designation: form.value.designation,
       declaration_type: form.value.declaration_type,
@@ -637,6 +652,7 @@ const loadDeclaration = async (declarationId) => {
       // Populate form with declaration data
       form.value.employee_name = declaration.employee_name
       form.value.employee_number = declaration.employee_number || ''
+      form.value.email = declaration.email || ''
       form.value.department = declaration.department
       form.value.designation = declaration.designation
       form.value.declaration_type = declaration.declaration_type

@@ -34,6 +34,7 @@ def create_declaration(data):
 	# Set employee fields from data
 	doc.employee_name = data.get("employee_name")
 	doc.employee_number = data.get("employee_number")
+	doc.email = data.get("email")
 	doc.department = data.get("department")
 	doc.designation = data.get("designation")
 
@@ -107,6 +108,8 @@ def update_declaration(name, data):
 		doc.employee_name = data["employee_name"]
 	if "employee_number" in data:
 		doc.employee_number = data["employee_number"]
+	if "email" in data:
+		doc.email = data["email"]
 	if "department" in data:
 		doc.department = data["department"]
 	if "designation" in data:

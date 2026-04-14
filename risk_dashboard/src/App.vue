@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="min-h-screen bg-off-white">
-    <!-- Header — hidden on login page -->
-    <header v-if="!isLoginPage" class="bg-white shadow-elegant sticky top-0 z-50">
+    <!-- Header — hidden on login page and public pages -->
+    <header v-if="!isLoginPage && !isPublicPage" class="bg-white shadow-elegant sticky top-0 z-50">
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4">
           <!-- Logo & Title -->
@@ -232,8 +232,8 @@
       </router-view>
     </main>
 
-    <!-- Footer — hidden on login page -->
-    <footer v-if="!isLoginPage" class="bg-white border-t border-light-border mt-16">
+    <!-- Footer — hidden on login page and public pages -->
+    <footer v-if="!isLoginPage && !isPublicPage" class="bg-white border-t border-light-border mt-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <p class="text-center text-medium-gray text-sm">
           &copy; {{ new Date().getFullYear() }} Kenya Red Cross Society. All rights reserved.
@@ -256,6 +256,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isLoginPage = computed(() => route.name === 'Login')
+const isPublicPage = computed(() => route.meta?.public === true)
 const isDashboardActive = computed(() => route.path === '/risk-dashboard/register-dash' || route.path === '/matrix')
 
 // Check if user has any KRCS risk role
