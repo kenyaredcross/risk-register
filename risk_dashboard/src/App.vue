@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="min-h-screen bg-off-white">
-    <!-- Header — hidden on login page -->
-    <header v-if="!isLoginPage" class="bg-white shadow-elegant sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header — hidden on login page and public pages -->
+    <header v-if="!isLoginPage && !isPublicPage" class="bg-white shadow-elegant sticky top-0 z-50">
+      <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4">
           <!-- Logo & Title -->
           <div class="flex items-center space-x-4">
@@ -75,22 +75,7 @@
               >
                 Risk Register
               </router-link>
-              <router-link
-                v-if="authStore.isSystemManager || authStore.isAudit"
-                to="/risk-dashboard/coi-dashboard"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path.startsWith('/risk-dashboard/coi') }"
-              >
-                COI Dashboard
-              </router-link>
-              <router-link
-                v-else
-                to="/my"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path === '/my' }"
-              >
-                My COI
-              </router-link>
+
               <!-- System Manager → full Admin (starts at Departments) -->
               <router-link
                 v-if="authStore.isSystemManager"
@@ -184,12 +169,7 @@
           <router-link v-if="hasRiskAccess" to="/risk-dashboard/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Risk Register
           </router-link>
-          <router-link v-if="authStore.isSystemManager || authStore.isAudit" to="/risk-dashboard/coi-dashboard" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
-            COI Dashboard
-          </router-link>
-          <router-link v-else to="/my" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
-            My COI
-          </router-link>
+
           <router-link v-if="authStore.isSystemManager || authStore.isHOD" to="/admin/departments" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Admin
           </router-link>
@@ -232,8 +212,8 @@
       </router-view>
     </main>
 
-    <!-- Footer — hidden on login page -->
-    <footer v-if="!isLoginPage" class="bg-white border-t border-light-border mt-16">
+    <!-- Footer — hidden on login page and public pages -->
+    <footer v-if="!isLoginPage && !isPublicPage" class="bg-white border-t border-light-border mt-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <p class="text-center text-medium-gray text-sm">
           &copy; {{ new Date().getFullYear() }} Kenya Red Cross Society. All rights reserved.
@@ -256,6 +236,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isLoginPage = computed(() => route.name === 'Login')
+const isPublicPage = computed(() => route.meta?.public === true)
 const isDashboardActive = computed(() => route.path === '/risk-dashboard/register-dash' || route.path === '/matrix')
 
 // Check if user has any KRCS risk role

@@ -21,22 +21,7 @@
         </div>
       </div>
 
-      <div class="service-card" @click="navigateToCOI">
-        <div class="service-icon coi-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-        </div>
-        <h2>Conflict of Interest</h2>
-        <p>Submit and manage your conflict of interest declarations</p>
-        <div class="service-actions">
-          <span class="action-link">Go to COI Declarations →</span>
-        </div>
-      </div>
+
     </div>
   </div>
 </template>
@@ -61,15 +46,7 @@ const navigateToRiskDashboard = () => {
   router.push('/risk-dashboard/register-dash')
 }
 
-const navigateToCOI = () => {
-  // Auditors and System Managers go to COI Dashboard
-  if (authStore.isSystemManager || authStore.isAudit) {
-    router.push('/risk-dashboard/coi-dashboard')
-  } else {
-    // Regular employees go to My page
-    router.push('/my')
-  }
-}
+
 </script>
 
 <style scoped>
@@ -136,10 +113,7 @@ const navigateToCOI = () => {
   color: #dc2626;
 }
 
-.coi-icon {
-  background: #eff6ff;
-  color: #2563eb;
-}
+
 
 .service-card h2 {
   font-size: 1.5rem;

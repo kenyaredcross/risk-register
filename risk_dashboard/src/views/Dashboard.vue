@@ -287,12 +287,26 @@
                     </span>
                   </td>
                   <td class="px-4 py-3 text-right">
-                    <button
-                      @click="viewRisk(risk)"
-                      class="text-sm text-red-primary hover:text-red-dark font-medium"
-                    >
-                      View
-                    </button>
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        @click="viewRisk(risk)"
+                        class="text-sm text-red-primary hover:text-red-dark font-medium"
+                      >
+                        View
+                      </button>
+                      <span class="text-medium-gray">|</span>
+                      <a
+                        :href="`/app/program-risk-register/${risk.name}`"
+                        target="_blank"
+                        class="text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
+                        title="Open in Desk"
+                      >
+                        Desk
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
                   </td>
                 </tr>
               </tbody>

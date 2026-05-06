@@ -12,7 +12,8 @@ const routes = [
     // "/" shows landing page with two services
     path: '/',
     name: 'Home',
-    component: () => import('../views/LandingPage.vue')
+    component: () => import('../views/LandingPage.vue'),
+    meta: { public: true }
   },
   {
     path: '/risk-dashboard/register-dash',
@@ -62,32 +63,6 @@ const routes = [
     component: () => import('../views/admin/Roles.vue'),
     meta: { requiresSystemManager: true }
   },
-  {
-    path: '/risk-dashboard/coi-dashboard',
-    name: 'COIDashboard',
-    component: () => import('../views/COIDashboard.vue'),
-    meta: { requiresAuditor: true }
-  },
-  {
-    path: '/my',
-    name: 'MyCOIDeclarations',
-    component: () => import('../views/MyCOIDeclarations.vue')
-  },
-  {
-    path: '/coi-declaration/create',
-    name: 'COIDeclarationCreate',
-    component: () => import('../views/COIDeclaration.vue')
-  },
-  {
-    path: '/coi-declaration/:id',
-    name: 'COIDeclarationView',
-    component: () => import('../views/COIDeclaration.vue')
-  },
-  {
-    path: '/coi-declarations',
-    name: 'COIDeclarations',
-    component: () => import('../views/COIDeclarationList.vue')
-  }
 ]
 
 const router = createRouter({
@@ -122,11 +97,6 @@ router.beforeEach(async (to) => {
 
   // Check user-manager requirement (System Manager, KRCS HOD, or KRCS PM)
   if (to.meta.requiresUserManager && !authStore.canManageUsers) {
-    return { name: 'Home' }
-  }
-
-  // Check auditor requirement (System Manager or KRCS Audit only)
-  if (to.meta.requiresAuditor && !authStore.isSystemManager && !authStore.isAudit) {
     return { name: 'Home' }
   }
 
