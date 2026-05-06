@@ -1,5 +1,4 @@
 ### KRCS Risk Management
-
 Risk Management module for Kenya Red Cross Society
 
 ### Installation
