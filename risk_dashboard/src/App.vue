@@ -75,22 +75,7 @@
               >
                 Risk Register
               </router-link>
-              <router-link
-                v-if="authStore.isSystemManager || authStore.isAudit"
-                to="/risk-dashboard/coi-dashboard"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path.startsWith('/risk-dashboard/coi') }"
-              >
-                COI Dashboard
-              </router-link>
-              <router-link
-                v-else
-                to="/my"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path === '/my' }"
-              >
-                My COI
-              </router-link>
+
               <!-- System Manager → full Admin (starts at Departments) -->
               <router-link
                 v-if="authStore.isSystemManager"
@@ -184,12 +169,7 @@
           <router-link v-if="hasRiskAccess" to="/risk-dashboard/risks" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Risk Register
           </router-link>
-          <router-link v-if="authStore.isSystemManager || authStore.isAudit" to="/risk-dashboard/coi-dashboard" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
-            COI Dashboard
-          </router-link>
-          <router-link v-else to="/my" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
-            My COI
-          </router-link>
+
           <router-link v-if="authStore.isSystemManager || authStore.isHOD" to="/admin/departments" class="block py-2 text-charcoal hover:text-red-primary" @click="mobileMenuOpen = false">
             Admin
           </router-link>
